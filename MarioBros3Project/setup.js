@@ -31,10 +31,9 @@ var GameManager = (function() {
 			break;
 			case this.PLAYING:
 				console.log("Gameplay has begun.");
-				this.GameEventLoop();
 
-				console.log(gm);
-				console.log(il);
+				console.log(gm.actorList);
+				console.log(gm.tileBackList);
 			break;
 		}
 	};
@@ -46,13 +45,18 @@ var GameManager = (function() {
 	this.SetUpGame = function() {
 		this.SetGameState(this.LOADING);
 		//
+<<<<<<< HEAD
 		this.imageLoader.AddTask("mario", "Mario.png");
 		this.imageLoader.AddTask("minigameMario", "MarioMiniGameSprites.png");
 		this.imageLoader.AddTask("shop", "CardMatchingGame.png");
+=======
+		this.GameEventLoop();
+>>>>>>> master
 	};
 
 	// *** This is called the moment the engine has finished loading. Create new sprites or begin game logic-- Stuff like that goes here!
 	this.InitializeGame = function() {
+<<<<<<< HEAD
 		this.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
 		this.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
 		this.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
@@ -69,6 +73,14 @@ var GameManager = (function() {
 		
 
 
+=======
+		// *** This allows sprites to be created BEFORE the game has finished loading!
+		for (var i in this.gameSprites) {
+			if (typeof this.gameSprites[i]._image == "string") {
+				this.gameSprites[i]._image = il.get(this.gameSprites[i]._image);
+			}
+		}
+>>>>>>> master
 	};
 
 
@@ -77,6 +89,11 @@ var GameManager = (function() {
 		var actor = new Actor(x, y);
 		//
 		return actor;
+	};
+	this.CreateTile = function(x, y, foreground) {
+		var tile = new Tile(x, y, foreground);
+		//
+		return tile;
 	};
 
 
@@ -114,8 +131,6 @@ var GameManager = (function() {
 	this.Update = function() {
 		for (var i = 0; i<this.actorList.length; i++) {
 			this.actorList[i].Update();
-
-			// console.log(this.actorList[i]);
 		}
 	};
 	this.Draw = function() {
@@ -145,11 +160,21 @@ var GameManager = (function() {
 
 	this.GameEventLoop = function() {
 		setTimeout(gm.GameEventLoop, 1000/gm.frameRate);
-		
-
-		gm.Update();
 		//
-		gm.Draw();
+		//
+		switch (gm.gameState)
+		{
+			case gm.LOADING:
+				if (il.assetsLoaded > 0 && il.assetsLoaded === il.assetsTotal) {
+					gm.SetGameState(gm.PLAYING);
+				};
+			break;
+			case gm.PLAYING:
+				gm.Update();
+				//
+				gm.Draw();
+			break;
+		}
 	};
 
 
@@ -241,9 +266,6 @@ var ImageLoader = (function() {
 	this.LoadHandler = function(event) {
 		// ??? <-- I wish I could reference "this" instead...
 		il.assetsLoaded++;
-		if (il.assetsLoaded === il.assetsTotal) {
-			gm.SetGameState(gm.PLAYING);
-		}
 	};
 
 
@@ -265,7 +287,7 @@ var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, num
 	//
 	//
 	//
-	this._image = il.get(this.id);
+	this._image = this.id;
 
 
 
@@ -290,11 +312,12 @@ var Actor = (function(x, y) {
 	gm._RegisterActor(this);
 });
 
-var Tile = (function(x, y) {
+var Tile = (function(x, y, foreground) {
 	this.x = x;
 	this.y = y;
 	//
 	//
+	this.sprite_index = 0;
 	this.sprite = undefined;
 	//
 	//
@@ -302,7 +325,7 @@ var Tile = (function(x, y) {
 
 
 
-	gm._RegisterTile(this);
+	gm._RegisterTile(this, foreground);
 });
 
 
