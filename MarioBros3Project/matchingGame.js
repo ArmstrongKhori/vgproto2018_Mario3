@@ -33,11 +33,13 @@ $(document).ready(function() {
 		this.height = h;
 	};
 
-	// Background
-	var background = new Image();
-	background.src = "MiniGameBackground.png";
-	var shopScene = new Sprite(0,0, 256,240, 0,0, 256,256, true);
-	sprites.push(background)
+
+	var actor = gm.CreateActor(0, 0);
+	actor.sprite = "shop";
 
 	
+	var actor = gm.CreateActor(40, 160);
+	actor.sprite = "smallMiniGameMario";
+	actor.sprite_speed = 1/gm.frameRate;
+
 });
