@@ -8,6 +8,7 @@ var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, num
 	//
 	//
 	this.frame = 0;
+	this._type = "sprite";
 	//
 	//
 	//
@@ -16,10 +17,6 @@ var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, num
 
 
 	this.Draw = function(context, x, y) {
-		context.drawImage(this._image, this.sx, this.sy, this.sw, this.sh, 0, 0, SIZE, SIZE);
+		context.drawImage(this._image, this.sx, this.sy, this.sw, this.sh, x, y, this.sw, this.sh);
 	};
-	//
-	//
-	//
-	gm._RegisterSprite(this);
 });
