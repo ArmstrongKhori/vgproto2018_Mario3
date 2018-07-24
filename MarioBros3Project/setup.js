@@ -45,42 +45,17 @@ var GameManager = (function() {
 	this.SetUpGame = function() {
 		this.SetGameState(this.LOADING);
 		//
-<<<<<<< HEAD
-		this.imageLoader.AddTask("mario", "Mario.png");
-		this.imageLoader.AddTask("minigameMario", "MarioMiniGameSprites.png");
-		this.imageLoader.AddTask("shop", "CardMatchingGame.png");
-=======
 		this.GameEventLoop();
->>>>>>> master
 	};
 
 	// *** This is called the moment the engine has finished loading. Create new sprites or begin game logic-- Stuff like that goes here!
 	this.InitializeGame = function() {
-<<<<<<< HEAD
-		this.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
-		this.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
-		this.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
-		this.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
-		this.AddSprite("shop", "shop", 0, 0, 256, 176, 1);
-		//
-		//
-		/*
-		var actor = gm.CreateActor(100, 100);
-		actor.sprite = "smallMarioWalk";
-		actor.sprite_speed = 12/gm.frameRate;
-		*/
-
-		
-
-
-=======
 		// *** This allows sprites to be created BEFORE the game has finished loading!
 		for (var i in this.gameSprites) {
 			if (typeof this.gameSprites[i]._image == "string") {
 				this.gameSprites[i]._image = il.get(this.gameSprites[i]._image);
 			}
 		}
->>>>>>> master
 	};
 
 
