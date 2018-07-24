@@ -33,22 +33,26 @@ $(document).ready(function() {
 		this.height = h;
 	};
 
-		this.imageLoader.AddTask("mario", "Mario.png");
-		this.imageLoader.AddTask("minigameMario", "MarioMiniGameSprites.png");
-		this.imageLoader.AddTask("shop", "CardMatchingGame.png");
+		il.AddTask("mario", "Mario.png");
+		il.AddTask("minigameMario", "MarioMiniGameSprites.png");
+		il.AddTask("shop", "CardMatchingGame.png");
 
-		this.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
-		this.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
-		this.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
-		this.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
-		this.AddSprite("shop", "shop", 0, 0, 256, 176, 1);
+		gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
+		gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
+		gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
+		gm.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
+		gm.AddSprite("big", "minigameMario", 0, 0, 96, 128, 1);
+		gm.AddSprite("shop", "shop", 0, 0, 256, 176, 1);
 
 		var actor = gm.CreateActor(0, 0);
 		actor.sprite = "shop";
 
-	
 		var actor = gm.CreateActor(40, 160);
-		actor.sprite = "smallMiniGameMario";
-		actor.sprite_speed = 1/gm.frameRate;
+
+	
+		/*var actor = gm.CreateActor(40, 160);
+		actor.sprite = "small";*/
+
+
 
 });
