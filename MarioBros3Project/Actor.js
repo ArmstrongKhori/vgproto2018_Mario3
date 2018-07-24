@@ -4,4 +4,11 @@ var Actor = (function(x, y) {
 	//
 	//
 	this.sprite = undefined;
+	//
+	//
+	this._type = "actor";
+
+
+
+	gm._RegisterActor(this);
 });

@@ -4,4 +4,11 @@ var Tile = (function(x, y) {
 	//
 	//
 	this.sprite = undefined;
+	//
+	//
+	this._type = "tile";
+
+
+
+	gm._RegisterTile(this);
 });
