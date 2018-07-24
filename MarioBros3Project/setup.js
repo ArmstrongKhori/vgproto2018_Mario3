@@ -47,6 +47,8 @@ var GameManager = (function() {
 		this.SetGameState(this.LOADING);
 		//
 		this.imageLoader.AddTask("mario", "Mario.png");
+		this.imageLoader.AddTask("minigameMario", "MarioMiniGameSprites.png");
+		this.imageLoader.AddTask("shop", "CardMatchingGame.png");
 	};
 
 	// *** This is called the moment the engine has finished loading. Create new sprites or begin game logic-- Stuff like that goes here!
@@ -54,6 +56,8 @@ var GameManager = (function() {
 		this.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
 		this.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
 		this.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
+		this.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
+		this.AddSprite("shop", "shop", 0, 0, 256, 176, 1);
 		//
 		//
 		/*
@@ -61,6 +65,10 @@ var GameManager = (function() {
 		actor.sprite = "smallMarioWalk";
 		actor.sprite_speed = 12/gm.frameRate;
 		*/
+
+		
+
+
 	};
 
 
