@@ -1,0 +1,46 @@
+// Variables
++ x
++ y
++ vX
++ vY
++ aX
++ aY
++ gravity
++ friction
++ momentum // the "run gauge"
++ poweredUp // the "power" state when jumping at full momentum
+
++ initialJumpForce // the initial force when jumping. A tap should clear exactly 1 block.
++ jumpRisePeriod // how long you can hold the button to continue rising. Stationary at maximum length, Mario clears 4 blocks.
++ maxSpeedH // maximum speed attainable when walking (but NOT when running!)
++ maxSpeedV // maximum speed attainable when falling (but NOT when rising!)
++ accRateH // The amount of horizontal speed gained when walking
++ runMultiplier // probably will be "2"
+
++ currentForm (small,dead,big,tail)
++ grasping <another object>
+
+
+// Actions
+! Jump
+! Fly
+! Grab
+! Kick
+! TailWhip
+! Stomp
+! GetHit
+! Die
+
+
+
+// Notes
+- Mario gains up to 2 more blocks of rising time when his speed goes beyond the walking limit (such that he can clear 6 blocks at maximum speed)
+- "Kicking" a grasped enemy while they are clipping inside of something solid causes them to die
+- You can "ram" a grasped enemy into another enemy to defeat them in a "special" way.
+- The enemy destroyed in this way has the same movement as Mario!
+- Does not gain momentum when running up hills
+- Mario only gains "momentum" when his speed is above the walking limit.
+- If Mario is colliding with a wall, "momentum" will stop gaining.
+- Mario enters "Full Momentum" if he jumps at full "momentum" with a tail. In this state, he can fly and will no longer deplete momentum.
+- "Full Momentum" lasts for about 4~4.5 seconds and will not decrease unless the tail is lost.
+- When "Full Momentum" ends, "momentum" is reduced to 0.
