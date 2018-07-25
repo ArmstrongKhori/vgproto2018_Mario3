@@ -2,6 +2,15 @@ $(document).ready(function() {
 	var canvas = $("#myCanvas");
 	var context = canvas.get(0).getContext("2d");
 
+	
+
+
+
+	// Game states
+	var PUSHING = 0;
+	var PLAYING = 1;
+	var gameState = PUSHING;
+
 	// Set Controls
 	var UP = 38;
 	var DOWN = 40;
@@ -12,11 +21,26 @@ $(document).ready(function() {
 	var START = 13;
 	var SELECT = 8;
 
-	// Game states
-	var PUSHING = 0;
-	var PLAYING = 1;
-	var gameState = PUSHING;
+	var pressA = false;
+	var pressB = false;
 
+	window.addEventListener("keydown", function(event) {
+		switch(event.keyCode) {
+			case A:
+				pressA = true; 
+				APress();
+				break;
+		}
+	}, false);
+
+	window.addEventListener("keyup", function(event) {
+		switch(event.keyCode) {
+			case A:
+				pressA = false;
+				APress();
+				break;
+		}
+	}, false);
 
 	// Loading Sprites
 	var sprites = new Array();
@@ -33,35 +57,65 @@ $(document).ready(function() {
 		this.height = h;
 	};
 
-		il.AddTask("mario", "Mario.png");
-		il.AddTask("minigameMario", "MarioMiniGameSprites.png");
-		il.AddTask("shopscene", "MiniGameBackground.png");
+		// Pulling sprite files for shop
+		il.AddTask("smallMinigameMario", "smallMinigameMario.png");
+		il.AddTask("largeMinigameMario", "largeMinigameMario.png");
+		il.AddTask("tanukiMiniGameMario", "tanukiMinigameMario.png")
+		il.AddTask("shopbackground", "MiniGameBackground.png");
 		il.AddTask("table", "Table.png");
 		il.AddTask("toad", "Toad.png");
 
-		gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
-		gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
-		gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
 
-		gm.AddSprite("shopbackground", "shopscene", 0, 0, 256, 256, 1);
+		// Pulling sprites for the actual matching game
+		il.AddTask("matchingGameBackground", "MatchingGameBackground.png");
+
+		// Creating Shop Sprites
+		gm.AddSprite("shopscene", "shopbackground", 0, 0, 256, 256, 1);
 		gm.AddSprite("table", "table", 0, 0, 96, 32, 1);
-		gm.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
-		gm.AddSprite("big", "minigameMario", 0, 0, 96, 128, 1);
-		gm.AddSprite("shop", "toad", 0, 0, 32, 48, 1);
+		gm.AddSprite("smallMinigameM", "smallMinigameMario", 0, 0, 48, 64, 1);
+		gm.AddSprite("largeMinigameM", "largeMinigameMario", 0, 0, 96, 128, 1);
+		gm.AddSprite("tanukiMinigameM", "tanukiMinigameMario", 0, 0, 144, 192, 1);
+		gm.AddSprite("toad", "toad", 0, 0, 32, 48, 1);
 
 
-		var shopBackground = gm.CreateActor(0, 0);
-		shopBackground.sprite = "shopbackground";
+		// Creating Minigame Sprites
+		gm.AddSprite("MiniGameBackground", "matchingGameBackground", 0, 0, 256, 176, 1);
 
-		var table = gm.CreateActor(80, 160);
+
+
+
+		var shopBackground = gm.CreateTile(0, 0, false);
+		shopBackground.sprite = "shopscene";
+
+		var table = gm.CreateTile(80, 104, true);
 		table.sprite = "table"
-
-	
-		var actor = gm.CreateActor(16, 128);
-		actor.sprite = "small";
-
-		var toad = gm.CreateActor(192, 144);
+		
+		var toad = gm.CreateTile(192, 88, true);
 		toad.sprite = "toad";
+
+
+		var small = gm.CreateTile(16, 72, true);
+		small.sprite = "smallMinigameM";
+
+
+	function APress(){
+
+
+		if(pressA = true){
+			// Clear shop scene
+			context.clearRect(0, 0, 256, 256);
+			context.clearRect(0, 0, 256, 256);
+			context.clearRect(0, 0, 256, 256);
+			context.clearRect(0, 0, 256, 256);
+
+
+
+			// Draw matching game background
+			var minigame = gm.CreateTile(0,0, false);
+			minigame.sprite = "MiniGameBackground";
+
+		}
+	}
 
 
 
