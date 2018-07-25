@@ -56,6 +56,8 @@ var GameManager = (function() {
 				this.gameSprites[i]._image = il.get(this.gameSprites[i]._image);
 			}
 		}
+
+		ct.Initialize();
 	};
 
 
@@ -145,6 +147,10 @@ var GameManager = (function() {
 				};
 			break;
 			case gm.PLAYING:
+				// *** Update controller input first! Actors may need it!
+				ct.Update();
+				//
+				//
 				gm.Update();
 				//
 				gm.Draw();
@@ -305,6 +311,116 @@ var Tile = (function(x, y, foreground) {
 
 
 
+var Controller = (function() {
+	
+	this.KEY_LEFT = 37;
+	this.KEY_UP = 38;
+	this.KEY_RIGHT = 39;
+	this.KEY_DOWN = 40;
+	this.KEY_Z = 90;
+	this.KEY_X = 88;
+	this.KEY_SHIFT = 16;
+	this.KEY_ENTER = 13;
+	this.KEY_SPACE = 32;
+	this.allKeys = undefined;
+	//
+	/*
+	this.MO_A = 0;
+	this.MO_B = 1;
+	this.MO_SELECT = 2;
+	this.MO_START = 3;
+	this.MO_HORI = 4;
+	this.MO_VERT = 5;
+	*/
+
+
+	this.keyStrokes = {};
+
+	this.keyState = {};
+	this.lastKeyState = {};
+
+
+
+	this.Initialize = function() {
+		this.allKeys = new Array();
+		this.allKeys.push(this.KEY_LEFT);
+		this.allKeys.push(this.KEY_UP);
+		this.allKeys.push(this.KEY_RIGHT);
+		this.allKeys.push(this.KEY_DOWN);
+		this.allKeys.push(this.KEY_Z);
+		this.allKeys.push(this.KEY_X);
+		this.allKeys.push(this.KEY_SHIFT);
+		this.allKeys.push(this.KEY_ENTER);
+		this.allKeys.push(this.KEY_SPACE);
+
+
+
+		window.addEventListener("keydown", function(event) {
+			switch (event.keyCode) {
+				case ct.KEY_LEFT:
+				case ct.KEY_UP:
+				case ct.KEY_RIGHT:
+				case ct.KEY_DOWN:
+				case ct.KEY_Z:
+				case ct.KEY_X:
+				case ct.KEY_SHIFT:
+				case ct.KEY_ENTER:
+				case ct.KEY_SPACE:
+					ct.keyStrokes[event.keyCode] = true;
+					break;
+			}
+		}, false);
+		window.addEventListener("keyup", function(event) {
+			switch (event.keyCode) {
+				case ct.KEY_LEFT:
+				case ct.KEY_UP:
+				case ct.KEY_RIGHT:
+				case ct.KEY_DOWN:
+				case ct.KEY_Z:
+				case ct.KEY_X:
+				case ct.KEY_SHIFT:
+				case ct.KEY_ENTER:
+				case ct.KEY_SPACE:
+					ct.keyStrokes[event.keyCode] = false;
+					break;
+			}
+		}, false);
+	};
+
+
+	this.Update = function() {
+		for (var key in this.allKeys) {
+			var value = this.allKeys[key];
+			this.lastKeyState[value] = this.keyState[value];
+			//
+			this.keyState[value] = this.keyStrokes[value];
+		}
+	};
+
+
+
+	this.KeyIsDown = function(keyCode) {
+		if (this.keyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.keyState[keyCode]; }
+	};
+	this.KeyWasPressed = function(keyCode) {
+		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.keyState[keyCode] && !this.lastKeyState[keyCode]; }
+	};
+	this.KeyWasReleased = function(keyCode) {
+		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.lastKeyState[keyCode] && !this.keyState[keyCode]; }
+	};
+});
+
+
+
 
 // ==============================================================================================================
 
@@ -312,6 +428,8 @@ var Tile = (function(x, y, foreground) {
 
 
 var il = new ImageLoader();
+var ct = new Controller();
 //
 var gm = new GameManager();
 gm.imageLoader = il;
+gm.input = ct;
