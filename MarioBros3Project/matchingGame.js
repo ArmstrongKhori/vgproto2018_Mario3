@@ -35,23 +35,33 @@ $(document).ready(function() {
 
 		il.AddTask("mario", "Mario.png");
 		il.AddTask("minigameMario", "MarioMiniGameSprites.png");
-		il.AddTask("shop", "CardMatchingGame.png");
+		il.AddTask("shopscene", "MiniGameBackground.png");
+		il.AddTask("table", "Table.png");
+		il.AddTask("toad", "Toad.png");
 
 		gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1);
 		gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
 		gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
+
+		gm.AddSprite("shopbackground", "shopscene", 0, 0, 256, 256, 1);
+		gm.AddSprite("table", "table", 0, 0, 96, 32, 1);
 		gm.AddSprite("small", "minigameMario", 0, 0, 48, 64, 1);
 		gm.AddSprite("big", "minigameMario", 0, 0, 96, 128, 1);
-		gm.AddSprite("shop", "shop", 0, 0, 256, 176, 1);
+		gm.AddSprite("shop", "toad", 0, 0, 32, 48, 1);
 
-		var actor = gm.CreateActor(0, 0);
-		actor.sprite = "shop";
 
-		var actor = gm.CreateActor(40, 160);
+		var shopBackground = gm.CreateActor(0, 0);
+		shopBackground.sprite = "shopbackground";
+
+		var table = gm.CreateActor(80, 160);
+		table.sprite = "table"
 
 	
-		/*var actor = gm.CreateActor(40, 160);
-		actor.sprite = "small";*/
+		var actor = gm.CreateActor(16, 128);
+		actor.sprite = "small";
+
+		var toad = gm.CreateActor(192, 144);
+		toad.sprite = "toad";
 
 
 
