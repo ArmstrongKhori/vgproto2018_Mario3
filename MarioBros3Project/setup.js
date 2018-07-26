@@ -62,15 +62,62 @@ var GameManager = (function() {
 
 
 	
-	this.CreateActor = function(x, y) {
+	this.CreateActor = function(x, y, params) {
 		var actor = new Actor(x, y);
+		//
+		if (typeof params == "string") {
+			params = this.GetLogic(params);
+		}
+		//
+		if (params !== undefined) {
+			for (var key in params) {
+				actor[key] = params[key];
+			}
+		}
 		//
 		return actor;
 	};
-	this.CreateTile = function(x, y, foreground) {
+	this.CreateTile = function(x, y, foreground, params) {
 		var tile = new Tile(x, y, foreground);
 		//
+		if (params !== undefined) {
+			for (var key in params) {
+				tile[key] = params[key];
+			}
+		}
+		//
 		return tile;
+	};
+
+
+
+	this.currentScene = undefined;
+	//
+	this.gameScenes = {};
+	this.CreateScene = function(sceneID, startUpFunction) {
+		if (startUpFunction === undefined) { startUpFunction = function(){}; }
+		//
+		this.gameScenes[sceneID] = startUpFunction;
+	};
+	
+
+	this.StartScene = function(sceneID) {
+		this._queuedScene = sceneID;
+	};
+	this._queuedScene = undefined;
+	this._StartScene = function(sceneID) {
+		if (this.gameScenes[sceneID] !== undefined) {
+			// ??? <-- This is REALLY bad. Work on "persistence" later...
+			this.tileBackList = new Array();
+			this.tileForeList = new Array();
+			this.actorList = new Array();
+
+
+
+			this.currentScene = sceneID;
+			//
+			this.gameScenes[sceneID]();
+		}
 	};
 
 
@@ -93,6 +140,15 @@ var GameManager = (function() {
 	};
 	this.GetSprite = function(key) {
 		return this.gameSprites[key];
+	};
+
+
+	this.gameLogics = {};
+	this.AddLogic = function(key, thisLogic) {
+		this.gameLogics[key] = thisLogic;
+	};
+	this.GetLogic = function(key) {
+		return this.gameLogics[key];
 	};
 
 
@@ -128,6 +184,24 @@ var GameManager = (function() {
 	};
 
 
+	this.Destroy = function(thisThing) {
+		if (thisThing._type == "actor") {
+			var index = this.actorList.indexOf(thisThing);
+			if (index >= 0) { this.actorList.splice(index, 1); }
+		}
+		else if (thisThing._type == "tile") {
+			var index = this.tileBackList.indexOf(thisThing);
+			if (index >= 0) { this.tileBackList.splice(index, 1); }
+			else {
+
+				index = this.tileForeList.indexOf(thisThing);
+				if (index >= 0) { this.tileForeList.splice(index, 1); }
+
+			}
+		}
+	};
+
+
 
 
 	// =========================================================================================================
@@ -136,9 +210,6 @@ var GameManager = (function() {
 	
 
 	this.GameEventLoop = function() {
-		setTimeout(gm.GameEventLoop, 1000/gm.frameRate);
-		//
-		//
 		switch (gm.gameState)
 		{
 			case gm.LOADING:
@@ -147,6 +218,11 @@ var GameManager = (function() {
 				};
 			break;
 			case gm.PLAYING:
+				if (gm.currentScene === undefined) {
+					console.log("ERROR: No scene is active! Terminating loop...");
+					return;
+				}
+
 				// *** Update controller input first! Actors may need it!
 				ct.Update();
 				//
@@ -156,6 +232,16 @@ var GameManager = (function() {
 				gm.Draw();
 			break;
 		}
+		//
+		//
+		if (gm._queuedScene !== undefined) {
+			gm._StartScene(gm._queuedScene);
+			//
+			gm._queuedScene = undefined;
+		}
+		//
+		//
+		setTimeout(gm.GameEventLoop, 1000/gm.frameRate);
 	};
 
 
@@ -197,9 +283,9 @@ var GameManager = (function() {
 	//
 	//
 	// *** These are how everything shows up on the screen and "interacts" with the engine. You never need to call these yourself.
-	this.tileBackList = new Array();
-	this.tileForeList = new Array();
-	this.actorList = new Array();
+	this.tileBackList = undefined;
+	this.tileForeList = undefined;
+	this.actorList = undefined;
 	this._Register = function(thisThing) {
 		thisThing.DrawMe = this._objFunction_DrawMe;
 		thisThing.Draw = this._objFunction_Draw;
