@@ -104,11 +104,11 @@ $(document).ready(function() {
 		if(pressA = true){
 			// Clear shop scene
 			context.clearRect(0, 0, 256, 256);
-			context.clearRect(0, 0, 256, 256);
-			context.clearRect(0, 0, 256, 256);
-			context.clearRect(0, 0, 256, 256);
+			
 
-
+			this._objFunction_Destroy = function() {
+			gm.Destroy(toad);
+	};
 
 			// Draw matching game background
 			var minigame = gm.CreateTile(0,0, false);
