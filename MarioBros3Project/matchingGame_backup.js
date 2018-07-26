@@ -2,10 +2,7 @@ $(document).ready(function() {
 	var canvas = $("#myCanvas");
 	var context = canvas.get(0).getContext("2d");
 
-	var audio = new Audio('SpadePuzzle.mp3');
-	audio.play();
-
-
+	var audio = new Audio("SpadePuzzle.mp3");
 
 	// Game states
 	var PUSHING = 0;
@@ -31,22 +28,78 @@ $(document).ready(function() {
 	var pressStart = false;
 	var pressSelect = false;
 
-	//0 = mushroom
-	//1 = star
+	window.addEventListener("key", function(event) {
+		switch(event.keyCode) {
+			case A:
+				pressA = true; 
+				swapScene();
+				break;
+		}
+		switch(event.keyCode) {
+			case UP:
+				pressUp = true; 
+				break;
+		}
+		switch(event.keyCode) {
+			case DOWN:
+				pressDown = true; 
+				break;
+		}
+		switch(event.keyCode) {
+			case LEFT:
+				pressLeft = true;
+				break;
+		}
+		switch(event.keyCode) {
+			case RIGHT:
+				pressRight = true; 
+				break;
+		}
+	}, false);
 
-	var map = [ [0,2,0,0,0,0],
-				[1,0,0,0,0,0],
-				[0,2,0,0,1,0]];
+	window.addEventListener("keyup", function(event) {
+		switch(event.keyCode) {
+			case A:
+				pressA = false;
+				swapScene();
+				break;
+		}
+		switch(event.keyCode) {
+			case UP:
+				pressUp = false; 
+				break;
+		}
+		switch(event.keyCode) {
+			case DOWN:
+				pressDown = false; 
+				break;
+		}
+		switch(event.keyCode) {
+			case LEFT:
+				pressLeft = false; 
+				break;
+		}
+		switch(event.keyCode) {
+			case RIGHT:
+				pressRight = false; 
+				break;
+		}
+	}, false);
 
-	var r = 0;
-	var c = 0;
+	// Loading Sprites
+	var sprites = new Array();
 
-	//When player pressed A use this code
-	var player = map[r][c];
 
-	var first = player;
-	var second = player;
-
+	var Sprite = function(sx,sy, sw,sh, x,y, w,h,) {
+		this.sourceX = sx;
+		this.sourceY = sy;
+		this.sourceWidth = sw;
+		this.sourceHeight = sh;
+		this.x = x;
+		this.y = y;
+		this.width = w;
+		this.height = h;
+	};
 
 	// Pulling sprite files for shop
 	il.AddTask("smallMinigameMario", "smallMinigameMario.png");
@@ -75,6 +128,14 @@ $(document).ready(function() {
 	gm.AddSprite("cursor", "playerCursor", 0, 0, 32, 48, 1);
 
 
+	gm.AddLogic("Cursor", {
+		Update: function() {
+
+		}
+
+	});
+
+
 	// Creating shop scene
 	gm.CreateScene("shop", function() {	
 
@@ -90,11 +151,6 @@ $(document).ready(function() {
 		var small = gm.CreateTile(16, 72, true);
 		small.sprite = "smallMinigameM";
 
-		var actor = gm.CreateActor(0, 0);
-		actor.Update = function() {
-			if(ct.KeyIsDown(ct.KEY_X)) {gm.StartScene("matchingGame"); }
-		}
-
 	});
 
 	// Creat matching game scene
@@ -102,77 +158,28 @@ $(document).ready(function() {
 
 		var matchingGameBackground = gm.CreateTile(0, 0, false);
 		matchingGameBackground.sprite = "MiniGameBackground"
-
-		var cursor = gm.CreateActor(25, 32, "Cursor");
 	});
 
 
 	gm.StartScene("shop");
 
-	//while(gm.StartScene("shop") === true){
+	// Create new screen on key press
+	function swapScene(){
 
 
-	//};
+		if(pressA = true){
+			// Clear shop scene and start minigame scene
+			gm.StartScene("matchingGame");
 
-	// Cursor moving logic
-	gm.AddLogic("Cursor", {
-		cx: 0,
-		cy: 0,
-		sprite: "cursor",
-		Update: function() {
-			if(ct.KeyWasPressed(ct.KEY_LEFT)) {
-				this.cx -= 1;
-				c--;
-			}
-			if(ct.KeyWasPressed(ct.KEY_RIGHT)) {
-				this.cx += 1;
+				
+		};
+		var cursor = gm.CreateActor(25, 31);
+			cursor.sprite = "cursor";
+	};
+	//
+	//
 
-			}
-			if(ct.KeyWasPressed(ct.KEY_DOWN)) {
-				this.cy += 1;
-			}
-			if(ct.KeyWasPressed(ct.KEY_UP)) {
-				this.cy -= 1;
-			}
 
-			if(this.cx > 5){
-				this.cx = 0;
-				c = 0;
-			}
-			if(this.cx < 0){
-				this.cx = 6-1;
-				c = 5;
-			}
-			if(this.cy > 2){
-				this.cy = 0;
-				r = 0;
-			}
-			if(this.cy < 0){
-				this.cy = 3-1;
-				r = 2;
-			}
-			
-
-			//this.cx = (this.cx % 6 +6) % 6;
-			//this.cy = (this.cy % 3 +3) % 3;
-			//
-			this.x = 25+this.cx*32;
-			this.y = 32+this.cy*48;
-		}
-	});
-
-	
-
-	switch(player){
-		case 0: 
-
-		break;
-
-		case 1:
-
-		break;
-
-	}
 
 
 });
