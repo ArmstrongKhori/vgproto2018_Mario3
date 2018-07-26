@@ -12,7 +12,14 @@ il.AddTask("mario", "Mario.png");
 il.AddTask("Items", "Items.png");
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
-gm.AddSprite("mushroom", "Items", 17, 209, 32, 32, 1);
+gm.AddSprite("mushroom", "Items", 21, 209, 32, 32, 1);
+gm.AddSprite("leaf", "Items", 65, 209, 32, 32, 1);
+gm.AddSprite("1up", "Items", 267, 209, 32, 32, 1);
+
+gm.AddSprite("pBlock", "Items",64, 250, 32, 32, 2);//pblock flashes and has 2 different states. thirs state after its been pressed
+
+gm.AddSprite("coin", "Items", )
+
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
@@ -34,6 +41,13 @@ var actor = gm.CreateActor(100, 100);
 actor.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
 actor.sprite_speed = 12/gm.frameRate; // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
 
+var actor = gm.CreateActor(100,0);
+actor.sprite = "leaf";
+actor.sprite_speed = 12/gm.frameRate;
+
+var actor = gm.CreateActor(150, 100);
+actor.sprite = "1up";
+actor.sprite_speed = 12/gm.frameRate;
 
 // *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
 var background = gm.CreateTile(0, 0, false);
