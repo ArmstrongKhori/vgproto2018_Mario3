@@ -3,40 +3,19 @@ $(document).ready(function() {
 	var context = canvas.get(0).getContext("2d");
 
 	var audio = new Audio('SpadePuzzle.mp3');
-	audio.play();
 
 
 
-	// Game states
-	var PUSHING = 0;
-	var PLAYING = 1;
-	var gameState = PUSHING;
+	/*0 = mushroom;
+	1 = tenCoin;
+	2 = twentyCoin;
+	3 = star;
+	4 = iceFlower;
+	5 = oneUp;*/ 
 
-	// Set Controls
-	var UP = 38;
-	var DOWN = 40;
-	var LEFT = 37;
-	var RIGHT = 39;
-	var A = 88;
-	var B = 90;
-	var START = 13;
-	var SELECT = 8;
-
-	var pressUp = false;
-	var pressDown = false;
-	var pressLeft = false;
-	var pressRight = false;
-	var pressA = false;
-	var pressB = false;
-	var pressStart = false;
-	var pressSelect = false;
-
-	//0 = mushroom
-	//1 = star
-
-	var map = [ [0,2,0,0,0,0],
-				[1,0,0,0,0,0],
-				[0,2,0,0,1,0]];
+	var map =  [[4,1,5,4,5,0],
+				[3,0,2,3,0,1],
+				[3,4,2,0,4,3]];
 
 	var r = 0;
 	var c = 0;
@@ -55,6 +34,13 @@ $(document).ready(function() {
 	il.AddTask("shopbackground", "MiniGameBackground.png");
 	il.AddTask("table", "Table.png");
 	il.AddTask("toad", "Toad.png");
+	il.AddTask("cardsprites", "CardAnimation.png");
+	il.AddTask("tenCoin", "TenCoin.png");
+	il.AddTask("twentyCoin", "TwentyCoin.png");
+	il.AddTask("mushroom", "Mushroom.png");
+	il.AddTask("star", "Star.png");
+	il.AddTask("iceFlower", "IceFlowerpng");
+	il.AddTask("1-UP", "1-UP.png");
 
 
 	// Pulling sprites for the actual matching game 
@@ -73,6 +59,7 @@ $(document).ready(function() {
 	// Creating Minigame Sprites
 	gm.AddSprite("MiniGameBackground", "matchingGameBackground", 0, 0, 256, 256, 1);
 	gm.AddSprite("cursor", "playerCursor", 0, 0, 32, 48, 1);
+	gm.AddSprite("cardanimation", "cardsprites", 0, 0, 29, 34, 5)
 
 
 	// Creating shop scene
@@ -97,13 +84,16 @@ $(document).ready(function() {
 
 	});
 
-	// Creat matching game scene
+	// Create matching game scene
 	gm.CreateScene("matchingGame", function() {
 
 		var matchingGameBackground = gm.CreateTile(0, 0, false);
 		matchingGameBackground.sprite = "MiniGameBackground"
 
 		var cursor = gm.CreateActor(25, 32, "Cursor");
+
+		var cardFlip = gm.CreateActor("Cursor", "Cursor", "CardAnimation");
+
 	});
 
 
@@ -120,6 +110,8 @@ $(document).ready(function() {
 		cy: 0,
 		sprite: "cursor",
 		Update: function() {
+
+			// Moving the cursor
 			if(ct.KeyWasPressed(ct.KEY_LEFT)) {
 				this.cx -= 1;
 				c--;
@@ -135,6 +127,7 @@ $(document).ready(function() {
 				this.cy -= 1;
 			}
 
+			// Boundaries
 			if(this.cx > 5){
 				this.cx = 0;
 				c = 0;
@@ -155,10 +148,20 @@ $(document).ready(function() {
 
 			//this.cx = (this.cx % 6 +6) % 6;
 			//this.cy = (this.cy % 3 +3) % 3;
-			//
+
+			// Setting the distance of cursor movement
 			this.x = 25+this.cx*32;
 			this.y = 32+this.cy*48;
 		}
+	});
+
+
+	gm.AddLogic("CardAnimation", {
+		sprite: "cardanimation";
+		Update: function() {
+
+		}
+
 	});
 
 	
@@ -169,6 +172,22 @@ $(document).ready(function() {
 		break;
 
 		case 1:
+
+		break;
+
+		case 2:
+
+		break;
+
+		case 3:
+
+		break;
+
+		case 4:
+
+		break;
+
+		case 5:
 
 		break;
 
