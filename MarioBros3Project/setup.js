@@ -56,19 +56,68 @@ var GameManager = (function() {
 				this.gameSprites[i]._image = il.get(this.gameSprites[i]._image);
 			}
 		}
+
+		ct.Initialize();
 	};
 
 
 	
-	this.CreateActor = function(x, y) {
+	this.CreateActor = function(x, y, params) {
 		var actor = new Actor(x, y);
+		//
+		if (typeof params == "string") {
+			params = this.GetLogic(params);
+		}
+		//
+		if (params !== undefined) {
+			for (var key in params) {
+				actor[key] = params[key];
+			}
+		}
 		//
 		return actor;
 	};
-	this.CreateTile = function(x, y, foreground) {
+	this.CreateTile = function(x, y, foreground, params) {
 		var tile = new Tile(x, y, foreground);
 		//
+		if (params !== undefined) {
+			for (var key in params) {
+				tile[key] = params[key];
+			}
+		}
+		//
 		return tile;
+	};
+
+
+
+	this.currentScene = undefined;
+	//
+	this.gameScenes = {};
+	this.CreateScene = function(sceneID, startUpFunction) {
+		if (startUpFunction === undefined) { startUpFunction = function(){}; }
+		//
+		this.gameScenes[sceneID] = startUpFunction;
+	};
+	
+
+	this.StartScene = function(sceneID) {
+		this._queuedScene = sceneID;
+	};
+	this._queuedScene = undefined;
+	this._StartScene = function(sceneID) {
+		if (this.gameScenes[sceneID] !== undefined) {
+			// ??? <-- This is REALLY bad. Work on "persistence" later...
+			this.tileBackList = new Array();
+			this.tileForeList = new Array();
+			this.actorList = new Array();
+
+
+
+			this.currentScene = sceneID;
+			//
+			this.gameScenes[sceneID]();
+		}
 	};
 
 
@@ -91,6 +140,15 @@ var GameManager = (function() {
 	};
 	this.GetSprite = function(key) {
 		return this.gameSprites[key];
+	};
+
+
+	this.gameLogics = {};
+	this.AddLogic = function(key, thisLogic) {
+		this.gameLogics[key] = thisLogic;
+	};
+	this.GetLogic = function(key) {
+		return this.gameLogics[key];
 	};
 
 
@@ -126,6 +184,24 @@ var GameManager = (function() {
 	};
 
 
+	this.Destroy = function(thisThing) {
+		if (thisThing._type == "actor") {
+			var index = this.actorList.indexOf(thisThing);
+			if (index >= 0) { this.actorList.splice(index, 1); }
+		}
+		else if (thisThing._type == "tile") {
+			var index = this.tileBackList.indexOf(thisThing);
+			if (index >= 0) { this.tileBackList.splice(index, 1); }
+			else {
+
+				index = this.tileForeList.indexOf(thisThing);
+				if (index >= 0) { this.tileForeList.splice(index, 1); }
+
+			}
+		}
+	};
+
+
 
 
 	// =========================================================================================================
@@ -134,9 +210,6 @@ var GameManager = (function() {
 	
 
 	this.GameEventLoop = function() {
-		setTimeout(gm.GameEventLoop, 1000/gm.frameRate);
-		//
-		//
 		switch (gm.gameState)
 		{
 			case gm.LOADING:
@@ -145,11 +218,30 @@ var GameManager = (function() {
 				};
 			break;
 			case gm.PLAYING:
+				if (gm.currentScene === undefined) {
+					console.log("ERROR: No scene is active! Terminating loop...");
+					return;
+				}
+
+				// *** Update controller input first! Actors may need it!
+				ct.Update();
+				//
+				//
 				gm.Update();
 				//
 				gm.Draw();
 			break;
 		}
+		//
+		//
+		if (gm._queuedScene !== undefined) {
+			gm._StartScene(gm._queuedScene);
+			//
+			gm._queuedScene = undefined;
+		}
+		//
+		//
+		setTimeout(gm.GameEventLoop, 1000/gm.frameRate);
 	};
 
 
@@ -191,9 +283,9 @@ var GameManager = (function() {
 	//
 	//
 	// *** These are how everything shows up on the screen and "interacts" with the engine. You never need to call these yourself.
-	this.tileBackList = new Array();
-	this.tileForeList = new Array();
-	this.actorList = new Array();
+	this.tileBackList = undefined;
+	this.tileForeList = undefined;
+	this.actorList = undefined;
 	this._Register = function(thisThing) {
 		thisThing.DrawMe = this._objFunction_DrawMe;
 		thisThing.Draw = this._objFunction_Draw;
@@ -305,6 +397,116 @@ var Tile = (function(x, y, foreground) {
 
 
 
+var Controller = (function() {
+	
+	this.KEY_LEFT = 37;
+	this.KEY_UP = 38;
+	this.KEY_RIGHT = 39;
+	this.KEY_DOWN = 40;
+	this.KEY_Z = 90;
+	this.KEY_X = 88;
+	this.KEY_SHIFT = 16;
+	this.KEY_ENTER = 13;
+	this.KEY_SPACE = 32;
+	this.allKeys = undefined;
+	//
+	/*
+	this.MO_A = 0;
+	this.MO_B = 1;
+	this.MO_SELECT = 2;
+	this.MO_START = 3;
+	this.MO_HORI = 4;
+	this.MO_VERT = 5;
+	*/
+
+
+	this.keyStrokes = {};
+
+	this.keyState = {};
+	this.lastKeyState = {};
+
+
+
+	this.Initialize = function() {
+		this.allKeys = new Array();
+		this.allKeys.push(this.KEY_LEFT);
+		this.allKeys.push(this.KEY_UP);
+		this.allKeys.push(this.KEY_RIGHT);
+		this.allKeys.push(this.KEY_DOWN);
+		this.allKeys.push(this.KEY_Z);
+		this.allKeys.push(this.KEY_X);
+		this.allKeys.push(this.KEY_SHIFT);
+		this.allKeys.push(this.KEY_ENTER);
+		this.allKeys.push(this.KEY_SPACE);
+
+
+
+		window.addEventListener("keydown", function(event) {
+			switch (event.keyCode) {
+				case ct.KEY_LEFT:
+				case ct.KEY_UP:
+				case ct.KEY_RIGHT:
+				case ct.KEY_DOWN:
+				case ct.KEY_Z:
+				case ct.KEY_X:
+				case ct.KEY_SHIFT:
+				case ct.KEY_ENTER:
+				case ct.KEY_SPACE:
+					ct.keyStrokes[event.keyCode] = true;
+					break;
+			}
+		}, false);
+		window.addEventListener("keyup", function(event) {
+			switch (event.keyCode) {
+				case ct.KEY_LEFT:
+				case ct.KEY_UP:
+				case ct.KEY_RIGHT:
+				case ct.KEY_DOWN:
+				case ct.KEY_Z:
+				case ct.KEY_X:
+				case ct.KEY_SHIFT:
+				case ct.KEY_ENTER:
+				case ct.KEY_SPACE:
+					ct.keyStrokes[event.keyCode] = false;
+					break;
+			}
+		}, false);
+	};
+
+
+	this.Update = function() {
+		for (var key in this.allKeys) {
+			var value = this.allKeys[key];
+			this.lastKeyState[value] = this.keyState[value];
+			//
+			this.keyState[value] = this.keyStrokes[value];
+		}
+	};
+
+
+
+	this.KeyIsDown = function(keyCode) {
+		if (this.keyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.keyState[keyCode]; }
+	};
+	this.KeyWasPressed = function(keyCode) {
+		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.keyState[keyCode] && !this.lastKeyState[keyCode]; }
+	};
+	this.KeyWasReleased = function(keyCode) {
+		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
+			return false;
+		}
+		else { return this.lastKeyState[keyCode] && !this.keyState[keyCode]; }
+	};
+});
+
+
+
 
 // ==============================================================================================================
 
@@ -312,6 +514,8 @@ var Tile = (function(x, y, foreground) {
 
 
 var il = new ImageLoader();
+var ct = new Controller();
 //
 var gm = new GameManager();
 gm.imageLoader = il;
+gm.input = ct;
