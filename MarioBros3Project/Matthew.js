@@ -3,6 +3,7 @@
 /* *** These are two important "global" objects:
 gm ~ "Game Manager" object. Handles game logic and holds important information.
 il ~ "Image Loader" object. Use for loading pictures.
+ct ~ "Controller" object. Use it for reading keyboard inputs.
 */
 
 
@@ -20,11 +21,17 @@ gm.AddSprite("coin", "coin", 0, 0, 24, 28, 6);
 gm.AddSprite("questionBlock", "questionBlock", 0, 0, 30, 28, 4);
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
+<<<<<<< HEAD:MarioBros3Project/Matthew.js
 gm.AddSprite("mushroom", "Items", 0, 0, 32, 32, 1);
 gm.AddSprite("leaf", "Items", 65, 209, 32, 32, 1);
 
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
+=======
+gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
+gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
+gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
+>>>>>>> master:MarioBros3Project/example.js
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
 
@@ -45,6 +52,12 @@ gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 
 
 gm.AddLogic("Mario", {
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: 0,
+	isOnGround: false,
+	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16, false),
 	Update: function() {
 		var motionHori = ct.KeyIsDown(ct.KEY_LEFT)*-1 + 1*ct.KeyIsDown(ct.KEY_RIGHT);
 		var motionVert = ct.KeyIsDown(ct.KEY_UP)*-1 + 1*ct.KeyIsDown(ct.KEY_DOWN);
@@ -66,14 +79,50 @@ gm.AddLogic("Mario", {
 		}
 		//
 		//
+		if (!this.isOnGround) {
+			this.ay = 800/gm.frameRate/gm.frameRate;
+		}
+		//
 		if (ct.KeyIsDown(ct.KEY_X)) {
 			this.x += 6*motionHori;
-			this.y += 6*motionVert;
 		}
 		else {
 			this.x += 4*motionHori;
-			this.y += 4*motionVert;
 		}
+
+		if (ct.KeyWasPressed(ct.KEY_Z)) {
+			if (this.isOnGround) {
+				this.vy = -200/gm.frameRate;
+				this.isOnGround = false;
+			}
+		}
+
+		if (motionHori != 0) {
+			this.xscale = motionHori*1;
+			this.yscale = 1;
+		}
+
+
+
+
+		this.vx += this.ax;
+		this.vy += this.ay;
+		//
+		this.x += this.vx;
+		this.y += this.vy;
+
+
+
+
+		if (this.Bottom() > 256) {
+			this.y -= (this.Bottom() - 256);
+			this.vy = 0;
+			this.isOnGround = true;
+
+			this.ay = 0;
+		}
+
+
 
 
 		// *** Remove it!
