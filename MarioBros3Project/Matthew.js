@@ -9,14 +9,18 @@ il ~ "Image Loader" object. Use for loading pictures.
 
 // *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
 il.AddTask("mario", "Mario.png");
-il.AddTask("Items", "Items.png");
+il.AddTask("Items", "shroomsAndLeaves.png");
 
 il.AddTask("questionBlock", "questionBlock.png");
+
+il.AddTask("coin", "coin.png");
+
+gm.AddSprite("coin", "coin", 0, 0, 24, 28, 6);
 
 gm.AddSprite("questionBlock", "questionBlock", 0, 0, 30, 28, 4);
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
-gm.AddSprite("mushroom", "Items", 21, 209, 32, 32, 1);
+gm.AddSprite("mushroom", "Items", 0, 0, 32, 32, 1);
 gm.AddSprite("leaf", "Items", 65, 209, 32, 32, 1);
 
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
@@ -95,17 +99,20 @@ gm.CreateScene("example1", function() {
 		sprite: "level1background" // *** Use that background sprite we made!
 	});
 
-/*
+	var actor = gm.CreateActor(150, 70);
+	actor.sprite = "coin";
+	actor.sprite_speed = 8/gm.frameRate;
+
+
 	var actor = gm.CreateActor(100,0);
 	actor.sprite = "questionBlock";
-	actor.sprite_speed = 5/gm/frameRate;
+	actor.sprite_speed = 5/gm.frameRate;
 
 
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
-	var actor = gm.CreateActor(100, 100);
+	var actor = gm.CreateActor(100, 200);
 	actor.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
 	actor.sprite_speed = 12/gm.frameRate; // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
-	*/
 });
 
 
