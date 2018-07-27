@@ -1,0 +1,12 @@
+
+p{
+	font-family:lol;
+	font-size: 7px;
+	z-index: 1;
+}
+
+@font-face{
+	font-family:"lol";
+	src: url("SuperMarioBros3.ttf") format("truetype");
+
+}
