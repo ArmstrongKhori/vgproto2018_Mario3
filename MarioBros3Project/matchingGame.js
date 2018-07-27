@@ -39,7 +39,7 @@ $(document).ready(function() {
 	il.AddTask("twentyCoin", "TwentyCoin.png");
 	il.AddTask("mushroom", "Mushroom.png");
 	il.AddTask("star", "Star.png");
-	il.AddTask("iceFlower", "IceFlowerpng");
+	il.AddTask("iceFlower", "IceFlower.png");
 	il.AddTask("1-UP", "1-UP.png");
 
 
@@ -60,6 +60,14 @@ $(document).ready(function() {
 	gm.AddSprite("MiniGameBackground", "matchingGameBackground", 0, 0, 256, 256, 1);
 	gm.AddSprite("cursor", "playerCursor", 0, 0, 32, 48, 1);
 	gm.AddSprite("cardanimation", "cardsprites", 0, 0, 29, 34, 5)
+	gm.AddSprite("tencoin", "tenCoin", 0, 0, 22, 32, 1);
+	gm.AddSprite("twentycoin", "twentyCoin", 0, 0, 22, 32, 1);
+	gm.AddSprite("mushroom", "mushroom", 0, 0, 22, 32, 1);
+	gm.AddSprite("star", "star", 0, 0, 22, 32, 1);
+	gm.AddSprite("iceflower", "iceFlower", 0, 0, 22, 32, 1);
+	gm.AddSprite("1-up", "1-UP", 0, 0, 22, 32, 1);
+
+
 
 
 	// Creating shop scene
@@ -155,14 +163,6 @@ $(document).ready(function() {
 		}
 	});
 
-
-	gm.AddLogic("CardAnimation", {
-		sprite: "cardanimation";
-		Update: function() {
-
-		}
-
-	});
 
 	
 
