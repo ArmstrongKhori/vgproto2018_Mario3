@@ -88,6 +88,12 @@ var GameManager = (function() {
 		//
 		return tile;
 	};
+	this.MakeBoundingBox = function(x, y, width, height, offsetx, offsety, solid) {
+		var box = new BBox(x, y, width, height, offsetx, offsety, solid);
+		//
+		//
+		return box;
+	};
 
 
 
@@ -135,8 +141,8 @@ var GameManager = (function() {
 
 	this.gameSprites = {};
 	// *** Sprites that can later be referenced by "Actors" and "Tiles" to show up on the screen.
-	this.AddSprite = function(key, imgid, sx, sy, sw, sh, frameCount) {
-		this.gameSprites[key] = new Sprite(imgid, sx, sy, sw, sh, frameCount);
+	this.AddSprite = function(key, imgid, sx, sy, sw, sh, frameCount, offsetx, offsety) {
+		this.gameSprites[key] = new Sprite(imgid, sx, sy, sw, sh, frameCount, offsetx, offsety);
 	};
 	this.GetSprite = function(key) {
 		return this.gameSprites[key];
@@ -234,6 +240,8 @@ var GameManager = (function() {
 		}
 		//
 		//
+		// *** We "queue up" the change of scene so that we do not interrupt anything important that may be happening.
+		// *** This also serves as a safety measure for if it is called multiple times in one step.
 		if (gm._queuedScene !== undefined) {
 			gm._StartScene(gm._queuedScene);
 			//
@@ -270,7 +278,7 @@ var GameManager = (function() {
 			this.sprite = gm.GetSprite(this.sprite);
 		}
 		//
-		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x, this.y); };
+		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x, this.y, this.xscale, this.yscale); };
 	};
 	// *** Allows for "special" drawing (for example, the chain link on a Roto-Disk trap). Make sure to call "DrawMe()" if you want the base sprite to appear as well!
 	this._objFunction_Draw = function() {
@@ -341,13 +349,15 @@ var ImageLoader = (function() {
 	}
 });
 
-var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, numberOfFrames) {
+var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, numberOfFrames, offsetx, offsety) {
 	this.id = imageID;
 	this.sx = sourceX;
 	this.sy = sourceY;
 	this.sw = sourceWidth;
 	this.sh = sourceHeight;
 	this.frameCount = numberOfFrames;
+	this.offsetx = offsetx || 0;
+	this.offsety = offsety || 0;
 	//
 	//
 	this._type = "sprite";
@@ -358,8 +368,19 @@ var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, num
 
 
 
-	this.Draw = function(context, index, x, y) {
-		context.drawImage(this._image, this.sx+this.sw*(Math.floor(index) % this.frameCount), this.sy, this.sw, this.sh, x, y, this.sw, this.sh);
+	this.Draw = function(context, index, x, y, xscale, yscale) {
+		xscale = xscale || 1;
+		yscale = yscale || 1;
+
+		context.save();
+		//
+		context.translate(x-this.offsetx*xscale, y-this.offsety*yscale);
+		//
+		context.scale(xscale,yscale);
+		//
+		context.drawImage(this._image, this.sx+this.sw*(Math.floor(index) % this.frameCount), this.sy, this.sw, this.sh, 0, 0, this.sw, this.sh);
+		//
+		context.restore();
 	};
 });
 
@@ -368,6 +389,8 @@ var Actor = (function(x, y) {
 	this.y = y;
 	this.sprite_index = 0;
 	this.sprite_speed = 1;
+	this.xscale = 1;
+	this.yscale = 1;
 	//
 	//
 	this.sprite = undefined;
@@ -376,12 +399,20 @@ var Actor = (function(x, y) {
 	this._type = "actor";
 
 
+	this.Left = function() 		{ return this.x+this.bbox.x -this.bbox.offsetx; };
+	this.Right = function() 	{ return this.x+this.bbox.x +this.bbox.width  -this.bbox.offsetx; };
+	this.Top = function() 		{ return this.y+this.bbox.y -this.bbox.offsety; };
+	this.Bottom = function() 	{ return this.y+this.bbox.y +this.bbox.height -this.bbox.offsety; };
+
+
 	gm._RegisterActor(this);
 });
 
 var Tile = (function(x, y, foreground) {
 	this.x = x;
 	this.y = y;
+	this.offsetx = 0;
+	this.offsety = 0;
 	//
 	//
 	this.sprite_index = 0;
@@ -393,6 +424,16 @@ var Tile = (function(x, y, foreground) {
 
 
 	gm._RegisterTile(this, foreground);
+});
+
+var BBox = (function(x, y, width, height, offsetx, offsety, solid) {
+	this.x = x;
+	this.y = y;
+	this.width = width;
+	this.height = height;
+	this.offsetx = offsetx;
+	this.offsety = offsety;
+	this.solid = solid;
 });
 
 
