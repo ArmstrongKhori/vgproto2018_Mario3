@@ -6,12 +6,7 @@ $(document).ready(function() {
 
 
 
-	/*0 = mushroom;
-	1 = tenCoin;
-	2 = twentyCoin;
-	3 = star;
-	4 = iceFlower;
-	5 = oneUp;*/ 
+	mushroom = 0;
 
 	var map =  [[4,1,5,4,5,0],
 				[3,0,2,3,0,1],
@@ -96,21 +91,91 @@ $(document).ready(function() {
 	gm.CreateScene("matchingGame", function() {
 
 		var matchingGameBackground = gm.CreateTile(0, 0, false);
-		matchingGameBackground.sprite = "MiniGameBackground"
+		matchingGameBackground.sprite = "MiniGameBackground";
 
 		var cursor = gm.CreateActor(25, 32, "Cursor");
+		var cardFlip = gm.CreateActor(cursor, cursor, "CardFlip");
 
-		var cardFlip = gm.CreateActor("Cursor", "Cursor", "CardAnimation");
+		var tenCoinOne = gm.CreateTile();
+		var tenCoinTwo = gm.CreateTile()
+		var tenCoinThree = gm.CreateTile()
+
+		var twentyCoinOne = gm.CreateTile()
+		var twentyCoinTwo = gm.CreateTile()
+
+
+		var mushroomOne = gm.CreateTile(190, 40);
+		var mushroomTwo = gm.CreateTile(62, 88);
+		var mushroomThree = gm.CreateTile(158, 88);
+		var mushroomFour = gm.CreateTile(126, 136);
+
+		var starOne = gm.CreateTile()
+		var starTwo = gm.CreateTile()
+		var starThree = gm.CreateTile()
+		var starFour = gm.CreateTile()
+
+		var iceFlowerOne = gm.CreateTile()
+		var iceFlowerTwo = gm.CreateTile()
+		var iceFlowerThree = gm.CreateTile()
+		var iceFlowerFour = gm.CreateTile()
+
+		var oneUPOne = gm.CreateTile()
+		var oneUPTwo = gm.CreateTile()
+
+
 
 	});
 
 
 	gm.StartScene("shop");
 
-	//while(gm.StartScene("shop") === true){
+	/*if((ct.KeyIsDown(ct.KEY_X) && this.cx = 5)	){
+			mushroomOne.sprite = "mushroom"
+		} else if((ct.KeyIsDown(ct.KEY_X)) && this.cx += 1){
+			mushroomTwo.sprite = "mushroom"
 
+		} else if((ct.KeyIsDown(ct.KEY_X)) && this.cx += 2){
+			mushroomThree.sprite = "mushroom"
 
-	//};
+		} else if((ct.KeyIsDown(ct.KEY_X)) && this.cx += 3){
+			mushroomFour.sprite = "mushroom"
+
+		}*/
+
+			switch(player) {
+			/*tenCoin = 0;
+			twentyCoin = 1;
+			mushroom = 2;
+			star = 3;
+			iceFlower = 4;
+			oneUP = 5;*/
+
+			case 0:
+		
+			break;
+
+			case 1:
+
+			break;
+
+			case 2:
+
+			break;
+
+			case 3:
+
+			break;
+
+			case 4:
+
+			break;
+
+			case 5:
+
+			break;
+
+		}
+
 
 	// Cursor moving logic
 	gm.AddLogic("Cursor", {
@@ -149,7 +214,7 @@ $(document).ready(function() {
 				r = 0;
 			}
 			if(this.cy < 0){
-				this.cy = 3-1;
+				this.cy = 2;
 				r = 2;
 			}
 			
@@ -160,38 +225,14 @@ $(document).ready(function() {
 			// Setting the distance of cursor movement
 			this.x = 25+this.cx*32;
 			this.y = 32+this.cy*48;
+
+			this.cc = 25+this.cx*32;
+			this.cr = 32+this.cy*48;
+
 		}
 	});
 
-
 	
-
-	switch(player){
-		case 0: 
-
-		break;
-
-		case 1:
-
-		break;
-
-		case 2:
-
-		break;
-
-		case 3:
-
-		break;
-
-		case 4:
-
-		break;
-
-		case 5:
-
-		break;
-
-	}
 
 
 });
