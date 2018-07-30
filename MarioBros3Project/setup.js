@@ -305,11 +305,13 @@ var GameManager = (function() {
 			this.sprite = gm.GetSprite(this.sprite);
 		}
 		//
-		var xx,yy;
-		if (gm.cameraObj) { xx = gm.cameraObj.x; yy = gm.cameraObj.y; }
-		else { xx = 0; yy = 0; }
-		//
-		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x-xx, this.y-yy, this.xscale, this.yscale); };
+		if (this.visible) {
+			var xx,yy;
+			if (gm.cameraObj) { xx = gm.cameraObj.x; yy = gm.cameraObj.y; }
+			else { xx = 0; yy = 0; }
+			//
+			if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x-xx, this.y-yy, this.xscale, this.yscale); };
+		}
 	};
 	// *** Allows for "special" drawing (for example, the chain link on a Roto-Disk trap). Make sure to call "DrawMe()" if you want the base sprite to appear as well!
 	this._objFunction_Draw = function() {
@@ -332,6 +334,7 @@ var GameManager = (function() {
 		thisThing.UpdateMe = this._objFunction_UpdateMe;
 		thisThing.Update = this._objFunction_Update;
 		thisThing.SpriteExists = this._objFunction_SpriteExists;
+		thisThing.visible = true;
 	}
 	this._RegisterTile = function(thisTile, foreground) {
 		if (foreground) { this.tileForeList.push(thisTile); }
