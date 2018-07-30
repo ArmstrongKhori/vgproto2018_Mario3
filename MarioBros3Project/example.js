@@ -158,6 +158,101 @@ gm.AddLogic("Mario", {
 	}
 });
 
+gm.AddLogic("HUD", {
+	sprite: "spritehud",
+	frameCount: 0,
+	PadText: function(num, size) {
+	    var s = num+"";
+	    while (s.length < size) s = "0" + s;
+	    return s;
+	},
+	Update: function() {
+		var marioScore = 175300;
+		var marioLives = 32;
+		var marioCoins = 77;
+		var marioWorld = 8;
+
+
+		// ========================================================================================
+ 	if (ct.KeyWasPressed(ct.KEY_U)) {
+ 		this.AddAllTheLives = this.AddAllTheLives + 100;
+ 	}
+			
+
+
+		this.frameCount += 1;
+		if (this.frameCount >= 30) {
+			this.timer -= 1;
+
+
+			this.frameCount = 0;
+		}
+
+
+		this.AddALLTHESCORES(1000);
+		this.AddAllTheCoins(1);
+		this.AddAllTheLives(0)
+
+		// ========================================================================================
+
+
+		//==========================================================================================
+
+
+	},
+	score: 0,
+	lives: 0,
+	coins: 0,
+	world: 1,
+	timer: 300,
+
+	AddALLTHESCORES: function(theSCoreValueWereLookingFor){
+		this.score += theSCoreValueWereLookingFor;
+	},
+	AddAllTheCoins: function(shinyThingInMarioPants){
+		this.coins += shinyThingInMarioPants;
+	
+	},
+	AddAllTheLives: function(HIGHonMARIOlives){
+		this.lives += HIGHonMARIOlives;
+	},
+
+	Draw: function() {
+		var camera = gm.FindByLogic("Camera");
+		this.x = camera.x;
+		this.y = camera.y +256-28;
+
+
+
+		this.DrawMe();
+		//
+		//
+		
+
+
+
+		var text = "O: "+this.timer;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 120, this.y+24);
+
+		var text = this.PadText(this.score,6)+"  ";
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 60, this.y+24);
+
+		var text = "WORLD:"+this.world;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 5, this.y+14);
+
+		var text = "$ "+this.coins;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 120, this.y+14);
+
+		var text = "[M] X: "+ this.lives;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 0, this.y+24);
+	}
+});
+
 
 
 
@@ -173,34 +268,7 @@ gm.CreateScene("example1", function() {
 	var actor = gm.CreateActor(100, 100, "Mario");
 	var actor = gm.CreateActor(0, 0, "Camera");
 
-	var hud = gm.CreateActor(0, 256-28);
-	hud.sprite = "spritehud";
-	hud.Draw = function() {
-		this.DrawMe();
-		//
-		//
-		var text = "O: "+300;
-		gm._context.font = "8px lol";
-		gm._context.fillText(text, this.x +120, this.y+24);
-
-		var text = "000000  ";
-		gm._context.font = "8px lol";
-		gm._context.fillText(text, this.x +60, this.y+24);
-
-		var text = "WORLD:"+1;
-		gm._context.font = "8px lol";
-		gm._context.fillText(text, this.x +5, this.y+14);
-
-		var text = "$ 000";
-		gm._context.font = "8px lol";
-		gm._context.fillText(text, this.x +120, this.y+14);
-
-		var text = "[M] X: "+ 4;
-		gm._context.font = "8px lol";
-		gm._context.fillText(text, this.x +5, this.y+24);
-
-		 
-	}
+	var hud = gm.CreateActor(0, 256-28, "HUD");
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
@@ -220,6 +288,7 @@ gm.CreateScene("example2", function() {
 
 	var actor = gm.CreateActor(10, 10, "Mario");
 	var actor = gm.CreateActor(0, 0, "Camera");
+	var hud = gm.CreateActor(0, 256-28, "HUD");
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
