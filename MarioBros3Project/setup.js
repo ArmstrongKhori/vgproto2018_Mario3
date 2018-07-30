@@ -8,6 +8,22 @@ var GameManager = (function() {
 	this.gameState = undefined;
 
 
+	this.cameraObj = undefined;
+	this.AssignCamera = function(thisCam) {
+		this.cameraObj = thisCam;
+	};
+
+	this.roomData = undefined;
+	this.SetRoomData = function(thisData) {
+		this.roomData = thisData;
+	};
+	this.GetRoomData = function() {
+		var data = this.roomData;
+		//
+		return data;
+	};
+
+
 	this.SetGameState = function(state) {
 		// State has ended.
 		switch (this.gameState)
@@ -61,12 +77,23 @@ var GameManager = (function() {
 	};
 
 
+
+	this.FindByLogic = function(thisLogic) {
+		for (var i = 0; i<this.actorList.length; i++) {
+			var act = this.actorList[i];
+			if (act.__logic == thisLogic) { return act; }
+		}
+	}
+
 	
 	this.CreateActor = function(x, y, params) {
 		var actor = new Actor(x, y);
 		//
 		if (typeof params == "string") {
-			params = this.GetLogic(params);
+			var lgc = params;
+			params = this.GetLogic(lgc);
+			//
+			params.__logic = lgc;
 		}
 		//
 		if (params !== undefined) {
@@ -278,7 +305,11 @@ var GameManager = (function() {
 			this.sprite = gm.GetSprite(this.sprite);
 		}
 		//
-		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x, this.y, this.xscale, this.yscale); };
+		var xx,yy;
+		if (gm.cameraObj) { xx = gm.cameraObj.x; yy = gm.cameraObj.y; }
+		else { xx = 0; yy = 0; }
+		//
+		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x-xx, this.y-yy, this.xscale, this.yscale); };
 	};
 	// *** Allows for "special" drawing (for example, the chain link on a Roto-Disk trap). Make sure to call "DrawMe()" if you want the base sprite to appear as well!
 	this._objFunction_Draw = function() {
@@ -533,16 +564,22 @@ var Controller = (function() {
 		else { return this.keyState[keyCode]; }
 	};
 	this.KeyWasPressed = function(keyCode) {
+		/*
 		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
 			return false;
 		}
-		else { return this.keyState[keyCode] && !this.lastKeyState[keyCode]; }
+		else { 
+			*/
+		return this.keyState[keyCode] && !this.lastKeyState[keyCode];
 	};
 	this.KeyWasReleased = function(keyCode) {
+		/*
 		if (this.keyState[keyCode] === undefined || this.lastKeyState[keyCode] === undefined) {
 			return false;
 		}
-		else { return this.lastKeyState[keyCode] && !this.keyState[keyCode]; }
+		else { 
+			*/
+		return this.lastKeyState[keyCode] && !this.keyState[keyCode];
 	};
 });
 
