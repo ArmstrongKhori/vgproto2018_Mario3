@@ -43,9 +43,6 @@ il.AddTask("MARIO", "mario image hub1.png");
 gm.AddSprite("spritehud", "MARIO",0,0,256,28,1);
 
 
-var marioF = gm.CreateTile(0, 256-28, true);
-marioF.sprite = "spritehud";
-
 
 // *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
 var background = gm.CreateTile(0, -28, false);
@@ -58,5 +55,4 @@ $("p").text("WORLD 1");
 var text = " WORLD 1"
 context.font = "6px arial";
 context.fillText(text,0,0);
-context.position = absolute;
-context.z-index = -1;
+
