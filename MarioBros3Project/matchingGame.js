@@ -6,7 +6,13 @@ $(document).ready(function() {
 
 
 
-	mushroom = 0;
+/* 	mushroom = 0;
+	tenCoin = 1;
+	twentyCoin = 2;
+	star = 3;
+	iceFlower = 4;
+	oneUP = 5; */
+
 
 	var map =  [[4,1,5,4,5,0],
 				[3,0,2,3,0,1],
@@ -94,33 +100,16 @@ $(document).ready(function() {
 		matchingGameBackground.sprite = "MiniGameBackground";
 
 		var cursor = gm.CreateActor(25, 32, "Cursor");
-		var cardFlip = gm.CreateActor(cursor, cursor, "CardFlip");
+		var cardFlip = gm.CreateActor(25, 32, "CardFlip");
 
+		// Cards
 		var tenCoinOne = gm.CreateTile();
-		var tenCoinTwo = gm.CreateTile()
-		var tenCoinThree = gm.CreateTile()
-
-		var twentyCoinOne = gm.CreateTile()
-		var twentyCoinTwo = gm.CreateTile()
-
-
-		var mushroomOne = gm.CreateTile(190, 40);
-		var mushroomTwo = gm.CreateTile(62, 88);
-		var mushroomThree = gm.CreateTile(158, 88);
-		var mushroomFour = gm.CreateTile(126, 136);
-
-		var starOne = gm.CreateTile()
-		var starTwo = gm.CreateTile()
-		var starThree = gm.CreateTile()
-		var starFour = gm.CreateTile()
-
-		var iceFlowerOne = gm.CreateTile()
-		var iceFlowerTwo = gm.CreateTile()
-		var iceFlowerThree = gm.CreateTile()
-		var iceFlowerFour = gm.CreateTile()
-
-		var oneUPOne = gm.CreateTile()
-		var oneUPTwo = gm.CreateTile()
+		var twentyCoinOne = gm.CreateTile();
+		var mushroomOne = gm.CreateTile();
+		var starOne = gm.CreateTile();
+		var iceFlowerOne = gm.CreateTile();
+		var oneUPOne = gm.CreateTile();
+	
 
 
 
@@ -142,39 +131,33 @@ $(document).ready(function() {
 
 		}*/
 
-			switch(player) {
-			/*tenCoin = 0;
-			twentyCoin = 1;
-			mushroom = 2;
-			star = 3;
-			iceFlower = 4;
-			oneUP = 5;*/
 
-			case 0:
-		
-			break;
+	gm.AddLogic("CardFlip", {	
+		sprite:"cardFlip",
+		Update: function() {
+			var firstTurn = 10;
+			var secondTurn = 20;
+			if(ct.KeyWasPressed(ct.KEY_X)) {
 
-			case 1:
 
-			break;
+				player = map[r][c];
+				Flip();
+				firstTurn();
 
-			case 2:
+				if(ct.KeyWasPressed(ct.KEY_X)) {
+					player = map[r][c];
+					Flip();
 
-			break;
+					if(first == second) {
+						secondTurn()
+					}
+				}
+			}	
+		}		
+	});
+	
 
-			case 3:
 
-			break;
-
-			case 4:
-
-			break;
-
-			case 5:
-
-			break;
-
-		}
 
 
 	// Cursor moving logic
@@ -191,13 +174,15 @@ $(document).ready(function() {
 			}
 			if(ct.KeyWasPressed(ct.KEY_RIGHT)) {
 				this.cx += 1;
-
+				c++;
 			}
 			if(ct.KeyWasPressed(ct.KEY_DOWN)) {
 				this.cy += 1;
+				r++;
 			}
 			if(ct.KeyWasPressed(ct.KEY_UP)) {
 				this.cy -= 1;
+				r--;
 			}
 
 			// Boundaries
@@ -206,16 +191,17 @@ $(document).ready(function() {
 				c = 0;
 			}
 			if(this.cx < 0){
-				this.cx = 6-1;
-				c = 5;
+				this.cx = 5;
+				c = 4;
 			}
 			if(this.cy > 2){
 				this.cy = 0;
 				r = 0;
+
 			}
 			if(this.cy < 0){
 				this.cy = 2;
-				r = 2;
+				r = 1;
 			}
 			
 
@@ -226,11 +212,64 @@ $(document).ready(function() {
 			this.x = 25+this.cx*32;
 			this.y = 32+this.cy*48;
 
-			this.cc = 25+this.cx*32;
-			this.cr = 32+this.cy*48;
-
 		}
 	});
+
+	function Flip(){
+
+		switch(player) {
+
+
+				case 0:
+					cardFlip.sprite = "cardanimation";
+					mushroomOne.sprite = "mushroom";
+				break;
+				
+
+				case 1:
+				if(ct.KeyWasPressed(ct.KEY_X))
+					cardFlip.sprite = "cardanimation";
+					tenCoinOne.sprite = "tencoin";
+				break;
+
+
+				case 2:
+				if(ct.KeyWasPressed(ct.KEY_X))
+					cardFlip.sprite = "cardanimation";
+					twentyCoinOne.sprite = "twentycoin";
+				break;
+
+				case 3:
+				if(ct.KeyWasPressed(ct.KEY_X))
+					cardFlip.sprite = "cardanimation";
+					starOne.sprite = "star";
+				break;
+
+
+				case 4:
+				if(ct.KeyWasPressed(ct.KEY_X))
+					cardFlip.sprite = "cardanimation";
+					iceFlowerOne.sprite = "iceflower";
+				break;
+
+
+				case 5:
+				if(ct.KeyWasPressed(ct.KEY_X))
+					cardFlip.sprite = "cardanimation";
+					oneUPOne.sprite = "1-up";
+				break;	
+			}
+		
+	}
+
+	//function firstTurn() {
+	//	var 
+
+	//}
+
+	//function secondTurn() {
+
+	//}
 
 	
 
