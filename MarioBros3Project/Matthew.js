@@ -9,29 +9,31 @@ ct ~ "Controller" object. Use it for reading keyboard inputs.
 
 
 // *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
-il.AddTask("mario", "Mario.png");
+
 il.AddTask("Items", "shroomsAndLeaves.png");
 
-il.AddTask("questionBlock", "questionBlock.png");
+il.AddTask("questionBlock2", "questionBlock2.png");
 
-il.AddTask("coin", "coin.png");
+il.AddTask("coin2", "coin2.png");
 
-gm.AddSprite("coin", "coin", 0, 0, 24, 28, 6);
+il.AddTask("pBlock", "pBlock.png");
 
-gm.AddSprite("questionBlock", "questionBlock", 0, 0, 30, 28, 4);
+gm.AddSprite("pBlock", "pBlock", 0, 0, 16, 16, 2);
+
+gm.AddSprite("pBlockDown", "pBlock", 32, 0, 16, 16, 1);
+
+gm.AddSprite("coin2", "coin2", 0, 0, 16, 16, 5);
+
+gm.AddSprite("questionBlock2", "questionBlock2", 0, 0, 16, 16, 4);
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
-<<<<<<< HEAD:MarioBros3Project/Matthew.js
-gm.AddSprite("mushroom", "Items", 0, 0, 32, 32, 1);
-gm.AddSprite("leaf", "Items", 65, 209, 32, 32, 1);
 
-gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2);
-gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2);
-=======
-gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
-gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
-gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
->>>>>>> master:MarioBros3Project/example.js
+gm.AddSprite("mushroom", "Items", 0, 0, 16, 16, 1);
+gm.AddSprite("leaf", "Items", 16, 0, 16, 16, 1);
+gm.AddSprite("1up", "Items", 32, 0, 16, 16, 1);
+
+
+
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
 
@@ -46,101 +48,50 @@ gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 
 
 
-
-
-
-
-
-gm.AddLogic("Mario", {
+gm.AddLogic("Mushroom", {
 	vx: 0,
 	vy: 0,
 	ax: 0,
 	ay: 0,
 	isOnGround: false,
-	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16, false),
-	Update: function() {
-		var motionHori = ct.KeyIsDown(ct.KEY_LEFT)*-1 + 1*ct.KeyIsDown(ct.KEY_RIGHT);
-		var motionVert = ct.KeyIsDown(ct.KEY_UP)*-1 + 1*ct.KeyIsDown(ct.KEY_DOWN);
-		//
-		//
-		if (motionHori == 0 && motionVert == 0) {
-			// *** We're using Mario's "idle" sprite-- You know, the one we created earlier!
-			// *** When we're NOT moving, we change to an idle sprite and stop animating.
-			this.sprite = "smallMarioIdle";
-			this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
-			this.sprite_speed = 0;
-		}
-		else {
-			// *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
-			// *** When we're moving, we change to a walking sprite and start animating.
-			this.sprite = "smallMarioWalk"; 
-			// *** DON'T set index! Let it animate~~
-			this.sprite_speed = 12/gm.frameRate;
-		}
-		//
-		//
-		if (!this.isOnGround) {
-			this.ay = 800/gm.frameRate/gm.frameRate;
-		}
-		//
-		if (ct.KeyIsDown(ct.KEY_X)) {
-			this.x += 6*motionHori;
-		}
-		else {
-			this.x += 4*motionHori;
-		}
+	isActive: false,
+	startingY: this.y,
 
-		if (ct.KeyWasPressed(ct.KEY_Z)) {
-			if (this.isOnGround) {
-				this.vy = -200/gm.frameRate;
-				this.isOnGround = false;
+	hasGoneUp: 0,
+
+//mushrooms update function. all logic for the mushroom goes in this update function
+	Update: function(){
+		this.sprite = "mushroom";
+		this.sprite_index = 0;
+		
+		if (this.isActive == true){
+			
+
+			this.hasGoneUp += 1;
+			if (this.hasGoneUp >= 16) {
+
+			
+				this.x += 1;
+
+			}else{
+				this.y += -1;
 			}
 		}
+		if (ct.KeyIsDown(ct.KEY_Z)){this.isActive = true;}
 
-		if (motionHori != 0) {
-			this.xscale = motionHori*1;
-			this.yscale = 1;
-		}
+		//if (this.startingY ==)
 
-
-
-
-		this.vx += this.ax;
-		this.vy += this.ay;
-		//
-		this.x += this.vx;
-		this.y += this.vy;
-
-
-
-
-		if (this.Bottom() > 256) {
-			this.y -= (this.Bottom() - 256);
-			this.vy = 0;
-			this.isOnGround = true;
-
-			this.ay = 0;
-		}
-
-
-
-
-		// *** Remove it!
-		if (ct.KeyIsDown(ct.KEY_SPACE)) { this.Destroy(); }
-
-		if (ct.KeyIsDown(ct.KEY_SHIFT)) { gm.StartScene("example2"); }
-
-
+		//updateMe must be the last thing in the function
 		this.UpdateMe();
+
+
 	}
 });
 
 
-
-
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
-	var actor = gm.CreateActor(100, 100, "Mario");
+	//var actor = gm.CreateActor(100, 100, "Mario");
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
@@ -148,21 +99,43 @@ gm.CreateScene("example1", function() {
 		sprite: "level1background" // *** Use that background sprite we made!
 	});
 
-	var actor = gm.CreateActor(150, 70);
-	actor.sprite = "coin";
-	actor.sprite_speed = 8/gm.frameRate;
+	var coin = gm.CreateActor(150, 70);
+	coin.sprite = "coin2";
+	coin.sprite_speed = 8/gm.frameRate;
 
+	var pBlock = gm.CreateActor(100,134);
+	pBlock.sprite = "pBlock";
+	pBlock.sprite_speed = 8/gm.frameRate;
 
-	var actor = gm.CreateActor(100,0);
-	actor.sprite = "questionBlock";
-	actor.sprite_speed = 5/gm.frameRate;
+	pBlock.Update = function(){
+		this.UpdateMe();
 
+		if (ct.KeyIsDown(ct.KEY_X)){ this.sprite = "pBlockDown";}
+	}
+
+	
+
+	var leaf = gm.CreateActor(50,150);
+	leaf.sprite = "leaf";
+	leaf.sprite_speed = 6/gm.frameRate;
+
+	var oneUp = gm.CreateActor(200,200);
+	oneUp.sprite = "1up";
+	oneUp.sprite_speed = 8/gm.frameRate;
 
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
-	var actor = gm.CreateActor(100, 200);
-	actor.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
-	actor.sprite_speed = 12/gm.frameRate; // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
+	var mushroom = gm.CreateActor(100, 200, "Mushroom");
+	//mushroom.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
+	//mushroom.sprite_speed = 12/gm.frameRate;
+	var qBlock = gm.CreateActor(100,200);
+	qBlock.sprite = "questionBlock2";
+	qBlock.sprite_speed = 8/gm.frameRate;
+
+	 // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
+
+
 });
+
 
 
 
