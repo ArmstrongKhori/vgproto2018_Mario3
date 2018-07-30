@@ -10,17 +10,17 @@ ct ~ "Controller" object. Use it for reading keyboard inputs.
 
 // *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
 il.AddTask("mario", "Mario.png");
-il.AddTask("goomba", "goomba with wings2.png");
-il.AddTask("koopatroopa", "KoopawithWings(good2).png")
-il.AddTask("piranhaFire", "fireball piranha red-left.png")
+il.AddTask("goomba", "goomba.png");
+il.AddTask("koopatroopa", "KoopawithWings(good2).png");
+//il.AddTask("piranhaFire", "fireball piranha red-left.png")
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
 //goomba
-gm.AddSprite("darkGoombawalking", "goomba", 30*0, 0, 30, 24, 2, 30/2, 24);
-gm.AddSprite("darkGoombaDead", "goomba", 19*2, 0, 19, 19, 1, 19/2, 19);
+gm.AddSprite("darkGoombawalking", "goomba", 16*0, 0, 16, 16, 2, 16/2, 16);
+//gm.AddSprite("darkGoombaDead", "goomba", 19*2, 0, 19, 19, 1, 19/2, 19);
 //koopatroopa
 gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 3, 20/2, 27);
 //gm.AddSprite("koopatroopaShell", "koopatroopa", 24*2, 0, 24, 24, 4, 19/2, 23);
@@ -129,9 +129,63 @@ gm.AddLogic("Mario", {
 	}
 });
 
-gm.AddLogic("Enemies", {
+gm.AddLogic("GreenKoopa", {
+	
+	sprite: "koopatroopaWalking",
+	sprite_speed: 5/gm.frameRate,
+	
+	Update: function(){
+		
+		this.UpdateMe();
+		
+		this.x = this.x + 1;
+		//var movCount = this.x;
+		
+		
+		//console.log(movCount);
+		
+		//console.log(movCount);
+		//console.log(this.x);
+		
+		this.sprite_index += 5/gm.frameRate;
+		if (this.sprite_index >= 3) {
+			this.y -= 10;
+			
+			this.sprite_index -= 3;
+		}
+		this.xscale = -1;
+	}
 	
 	
+	
+});
+
+gm.AddLogic("Goomba", {
+	
+	sprite: "darkGoombawalking",
+	sprite_speed: 5/gm.frameRate,
+	
+	Update: function(){
+		
+		this.UpdateMe();
+		
+		this.x = this.x + 1;
+		//var movCount = this.x;
+		
+		
+		//console.log(movCount);
+		
+		//console.log(movCount);
+		//console.log(this.x);
+		
+		/*this.sprite_index += 5/gm.frameRate;
+		if (this.sprite_index >= 3) {
+			this.y -= 10;
+			
+			this.sprite_index -= 3;
+		}*/
+		//this.xscale = -1;
+	}
 	
 	
 	
@@ -141,7 +195,10 @@ gm.AddLogic("Enemies", {
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
-	var actor = gm.CreateActor(200,200, "Enemies");
+	var actor = gm.CreateActor(50, 240, "GreenKoopa");
+	var actor = gm.CreateActor(75, 240, "Goomba");
+	
+	/*
 	var actor = gm.CreateActor(150,150,{
 		sprite: "koopatroopaWalking",
 		sprite_speed: 5/gm.frameRate,
@@ -150,6 +207,7 @@ gm.CreateScene("example1", function() {
 		sprite: "piranhaFiring",
 		sprite_speed: 5/gm.frameRate,
 	});
+	*/
 	
 
 
