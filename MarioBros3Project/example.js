@@ -10,22 +10,11 @@ ct ~ "Controller" object. Use it for reading keyboard inputs.
 
 // *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
 il.AddTask("mario", "Mario.png");
-il.AddTask("goomba", "goomba with wings2.png");
-il.AddTask("koopatroopa", "KoopawithWings(good2).png")
-il.AddTask("piranhaFire", "fireball piranha red-left.png")
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
-//goomba
-gm.AddSprite("darkGoombawalking", "goomba", 30*0, 0, 30, 24, 2, 30/2, 24);
-gm.AddSprite("darkGoombaDead", "goomba", 19*2, 0, 19, 19, 1, 19/2, 19);
-//koopatroopa
-gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 3, 20/2, 27);
-//gm.AddSprite("koopatroopaShell", "koopatroopa", 24*2, 0, 24, 24, 4, 19/2, 23);
-
-gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32)
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
 
@@ -135,19 +124,6 @@ gm.AddLogic("Mario", {
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
-	var actor = gm.CreateActor(200,200, {
-		sprite: "darkGoombawalking",
-		sprite_speed: 5/gm.frameRate,
-	});
-	var actor = gm.CreateActor(150,150,{
-		sprite: "koopatroopaWalking",
-		sprite_speed: 5/gm.frameRate,
-	});
-	var actor = gm.CreateActor(50,50,{
-		sprite: "piranhaFiring",
-		sprite_speed: 5/gm.frameRate,
-	});
-	
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
