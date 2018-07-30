@@ -129,6 +129,15 @@ gm.AddLogic("Mario", {
 	}
 });
 
+gm.AddLogic("Enemies", {
+	
+	
+	
+	
+	
+});
+
+
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
