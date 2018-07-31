@@ -187,20 +187,22 @@ gm.AddLogic("Cursor", {
 								this.storeFirst = card;
 							}
 							if (this.storeSecond != undefined){
-								this.delay = 60;
+								this.delay = 30;
 							}
 						}
 
 						// Losing the game		
-						if(this.fails == 2){
-							gm.StartScene("shop");
-						}
-						if(this.matches == 9){
-							gm.StartScene("shop");
-						}
+						
 					}
 				} // for
 			} // X key
+		}
+
+		if(this.fails == 2){
+			gm.StartScene("shop");
+		}
+		if(this.matches == 9){
+			gm.StartScene("shop");
 		}
 
 	}
