@@ -18,9 +18,6 @@ gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
 
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
-
-
-
 // *** Same as above-- Different image.
 il.AddTask("backdrop", "level.png");
 //

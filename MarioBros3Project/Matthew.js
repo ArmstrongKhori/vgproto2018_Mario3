@@ -32,7 +32,14 @@ gm.AddSprite("mushroom", "Items", 0, 0, 16, 16, 1);
 gm.AddSprite("leaf", "Items", 16, 0, 16, 16, 1);
 gm.AddSprite("1up", "Items", 32, 0, 16, 16, 1);
 
-
+gm.AddLogic("SolidBlock", {
+	sprite: "solidBoxFull",
+	solid: true,
+	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
+	xscale: 1/4,
+	yscale: 1/4,
+	bbox: undefined,
+});
 
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
@@ -46,7 +53,7 @@ il.AddTask("backdrop", "level.png");
 gm.AddSprite("level1background", "backdrop", 0, 432-256, 256, 256, 1);
 gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 
-
+var SECOND = gm.frameRate;
 
 gm.AddLogic("Mushroom", {
 	vx: 0,
@@ -55,9 +62,11 @@ gm.AddLogic("Mushroom", {
 	ay: 0,
 	isOnGround: false,
 	isActive: false,
-	startingY: this.y,
-	hasGoneLeft: 0,
-	hasGoneUp: 0,
+
+
+	sprite: "solidBoxFull",
+	solid: true,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
 
 //mushrooms update function. all logic for the mushroom goes in this update function
 	Update: function(){
@@ -65,32 +74,108 @@ gm.AddLogic("Mushroom", {
 		this.sprite_index = 0;
 		
 		if (this.isActive == true){
-			
 
-			this.hasGoneUp += 1;
-			if (this.hasGoneUp >= 16) {
+			if (this.y <= 200 - 16) {
+				//these two values are affecting the way the mushroom moves and falls. need to adjust numbers
+				this.ay = 4670/SECOND/SECOND;
+				this.vx = 1.5;
 
-			
-				this.x += 1;
+				//this.vx = 1;
+				//console.log("if");
 
 			}else{
-				this.y += -1;
+				this.vy = -1;
+				//console.log("else");
 			}
-			this.hasGoneLeft += 1;
-			if (this.hasGoneLeft >= 16){
-				this.x += 1;
-				this.y += 1;
-			}
+
+
 		}
-		if (ct.KeyIsDown(ct.KEY_Z)){this.isActive = true;}
+		if (ct.KeyIsDown(ct.KEY_Z)){
+			this.isActive = true;
+
+		}
 
 		//if (this.startingY ==)
 
 		//updateMe must be the last thing in the function
+
+		// *** Acceleration...
+		this.vx += this.ax;
+		this.vy += this.ay;
+		//
+		// *** Velocity...
+		this.x += this.vx;
+		this.y += this.vy;
+
+		for (var i = 0; i<gm.actorList.length; i++) {
+
+			var Q = gm.actorList[i];
+
+			//
+			if (Q.solid) {
+				var collisionSide = this.CollideWith(Q, true);
+				//
+				//
+				if (collisionSide === "bottom" && this.vy >= 0) {
+					this.vy = 0;
+					// this.ay = 0; 
+					
+					this.isOnGround = true;
+					
+
+
+					// this.vy = -this.gravity;
+				} else if (collisionSide === "top" && this.vy <= 0) {
+					this.vy = 0;
+	
+					
+				} else if (collisionSide === "right" && this.vx >= 0) {
+					this.vx = 0;
+					this.ax = 0;
+
+				} else if (collisionSide === "left" && this.vx <= 0) {
+					this.vx = 0;
+					this.ax = 0;
+
+				}
+
+				/*
+				if (collisionSide !== "bottom" && this.vy > 0) {
+					this.isOnGround = false;
+				}
+				*/
+			}
+		}
+
+
 		this.UpdateMe();
 
 
 	}
+
+
+});
+
+gm.AddLogic("questionBlock2", {
+	isActive: false,
+	startingY: this.y,
+	sprite: "solidBoxFull",
+	solid: true,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
+
+	Update: function(){
+		this.sprite = "questionBlock2";
+		this.sprite_index = 0;
+		this.sprite_speed = 8/gm.frameRate;
+
+
+
+		this.UpdateMe();
+
+	}
+
+
+
 });
 
 
@@ -132,8 +217,7 @@ gm.CreateScene("example1", function() {
 	var mushroom = gm.CreateActor(100, 200, "Mushroom");
 	//mushroom.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
 	//mushroom.sprite_speed = 12/gm.frameRate;
-	var qBlock = gm.CreateActor(100,200);
-	qBlock.sprite = "questionBlock2";
+	var qBlock = gm.CreateActor(100,200, "questionBlock2");
 	qBlock.sprite_speed = 8/gm.frameRate;
 
 	 // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
