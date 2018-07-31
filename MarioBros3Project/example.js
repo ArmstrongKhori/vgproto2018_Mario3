@@ -161,6 +161,8 @@ gm.AddLogic("Mario", {
 gm.AddLogic("HUD", {
 	sprite: "spritehud",
 	frameCount: 0,
+
+
 	PadText: function(num, size) {
 	    var s = num+"";
 	    while (s.length < size) s = "0" + s;
@@ -168,10 +170,11 @@ gm.AddLogic("HUD", {
 	},
 	Update: function() {
 		var marioScore = 175300;
-		var marioLives = 32;
-		var marioCoins = 77;
+		var marioLives = 0;
+		var marioCoins = 0;
 		var marioWorld = 8;
 
+		var addLives = ct.KeyWasPressed(ct.KEY_U);
 
 		// ========================================================================================
  	if (ct.KeyWasPressed(ct.KEY_U)) {
@@ -180,12 +183,13 @@ gm.AddLogic("HUD", {
 			
 
 
-		this.frameCount += 1;
-		if (this.frameCount >= 30) {
-			this.timer -= 1;
-
-
-			this.frameCount = 0;
+		
+		if(this.timer>0){
+			this.frameCount += 1;
+			if (this.frameCount >= 30) {
+				this.timer -= 1;
+				this.frameCount = 0;
+			}
 		}
 
 
@@ -210,11 +214,19 @@ gm.AddLogic("HUD", {
 		this.score += theSCoreValueWereLookingFor;
 	},
 	AddAllTheCoins: function(shinyThingInMarioPants){
-		this.coins += shinyThingInMarioPants;
+		this.coins = shinyThingInMarioPants;
 	
 	},
 	AddAllTheLives: function(HIGHonMARIOlives){
 		this.lives += HIGHonMARIOlives;
+		if(this.coins >= 100){
+			this.coin -= 100;
+			this.lives += 1;                     
+		}
+		if(this.lives){//get mario dying function
+		}
+		else if
+
 	},
 
 	Draw: function() {
@@ -227,10 +239,6 @@ gm.AddLogic("HUD", {
 		this.DrawMe();
 		//
 		//
-		
-
-
-
 		var text = "O: "+this.timer;
 		gm._context.font = "8px lol";
 		gm._context.fillText(text, 120, this.y+24);
@@ -253,7 +261,10 @@ gm.AddLogic("HUD", {
 	}
 });
 
+//================================================================================================================
 
+
+//================================================================================================================
 
 
 gm.CreateScene("example1", function() {
