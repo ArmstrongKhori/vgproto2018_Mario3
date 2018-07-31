@@ -56,7 +56,7 @@ gm.AddLogic("Mushroom", {
 	isOnGround: false,
 	isActive: false,
 	startingY: this.y,
-
+	hasGoneLeft: 0,
 	hasGoneUp: 0,
 
 //mushrooms update function. all logic for the mushroom goes in this update function
@@ -75,6 +75,11 @@ gm.AddLogic("Mushroom", {
 
 			}else{
 				this.y += -1;
+			}
+			this.hasGoneLeft += 1;
+			if (this.hasGoneLeft >= 16){
+				this.x += 1;
+				this.y += 1;
 			}
 		}
 		if (ct.KeyIsDown(ct.KEY_Z)){this.isActive = true;}
