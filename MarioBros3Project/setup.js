@@ -140,6 +140,14 @@ var GameManager = (function() {
 	this._queuedScene = undefined;
 	this._StartScene = function(sceneID) {
 		if (this.gameScenes[sceneID] !== undefined) {
+			/*
+			var persistList = new Array();
+			for (var i = 0; i<this.actorList.length; i++) {
+
+				persistList.push();
+			}
+			*/
+
 			// ??? <-- This is REALLY bad. Work on "persistence" later...
 			this.tileBackList = new Array();
 			this.tileForeList = new Array();
@@ -305,11 +313,13 @@ var GameManager = (function() {
 			this.sprite = gm.GetSprite(this.sprite);
 		}
 		//
-		var xx,yy;
-		if (gm.cameraObj) { xx = gm.cameraObj.x; yy = gm.cameraObj.y; }
-		else { xx = 0; yy = 0; }
-		//
-		if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x-xx, this.y-yy, this.xscale, this.yscale); };
+		if (this.visible) {
+			var xx,yy;
+			if (gm.cameraObj) { xx = gm.cameraObj.x; yy = gm.cameraObj.y; }
+			else { xx = 0; yy = 0; }
+			//
+			if (this.SpriteExists()) { this.sprite.Draw(gm._context, this.sprite_index, this.x-xx, this.y-yy, this.xscale, this.yscale); };
+		}
 	};
 	// *** Allows for "special" drawing (for example, the chain link on a Roto-Disk trap). Make sure to call "DrawMe()" if you want the base sprite to appear as well!
 	this._objFunction_Draw = function() {
@@ -318,6 +328,41 @@ var GameManager = (function() {
 
 	this._objFunction_SpriteExists = function() {
 		return (typeof this.sprite !== "undefined" && this.sprite._type === "sprite");
+	};
+	this._objFunction_Exists = function() {
+		return gm.actorList.indexOf(this) >= 0;
+	};
+
+
+	this._objFunction_Left = function() {
+		var v = this.x;
+		if (this.bbox != undefined) { v += this.bbox.x -this.bbox.offsetx; }
+		return v;
+	};
+	this._objFunction_Right = function() {
+		var v = this.x;
+		if (this.bbox != undefined) { v += this.bbox.x +this.bbox.width  -this.bbox.offsetx; }
+		return v;
+	};
+	this._objFunction_Top = function() {
+		var v = this.y;
+		if (this.bbox != undefined) { v += this.bbox.y -this.bbox.offsety; }
+		return v;
+	};
+	this._objFunction_Bottom = function() {
+		var v = this.y;
+		if (this.bbox != undefined) { v += this.bbox.y +this.bbox.height  -this.bbox.offsety; }
+		return v;
+	};
+	this._objFunction_Width = function() {
+		var v = 0;
+		if (this.bbox != undefined) { v += this.bbox.width; }
+		return v;
+	};
+	this._objFunction_Height = function() {
+		var v = 0;
+		if (this.bbox != undefined) { v += this.bbox.height; }
+		return v;
 	};
 	//
 	//
@@ -332,6 +377,15 @@ var GameManager = (function() {
 		thisThing.UpdateMe = this._objFunction_UpdateMe;
 		thisThing.Update = this._objFunction_Update;
 		thisThing.SpriteExists = this._objFunction_SpriteExists;
+		thisThing.Exists = this._objFunction_Exists;
+		//
+		thisThing.visible = true;
+		thisThing.Left = this._objFunction_Left;
+		thisThing.Right = this._objFunction_Right;
+		thisThing.Top = this._objFunction_Top;
+		thisThing.Bottom = this._objFunction_Bottom;
+		thisThing.Width = this._objFunction_Width;
+		thisThing.Height = this._objFunction_Height;
 	}
 	this._RegisterTile = function(thisTile, foreground) {
 		if (foreground) { this.tileForeList.push(thisTile); }
@@ -425,15 +479,65 @@ var Actor = (function(x, y) {
 	//
 	//
 	this.sprite = undefined;
+	this.persistent = false;
 	//
 	//
 	this._type = "actor";
 
 
-	this.Left = function() 		{ return this.x+this.bbox.x -this.bbox.offsetx; };
-	this.Right = function() 	{ return this.x+this.bbox.x +this.bbox.width  -this.bbox.offsetx; };
-	this.Top = function() 		{ return this.y+this.bbox.y -this.bbox.offsety; };
-	this.Bottom = function() 	{ return this.y+this.bbox.y +this.bbox.height -this.bbox.offsety; };
+	this.CollideWith = function(r2, readjust) {
+		if (typeof readjust === "undefined") {
+			readjust = false;
+		}
+		var r1 = this;
+		//
+		//
+		var collisionSide = "";
+
+		var vX = (r1.Left()+r1.Right())/2 - (r2.Left()+r2.Right())/2;
+		var vY = (r1.Top()+r1.Bottom())/2 - (r2.Top()+r2.Bottom())/2;
+
+
+		var combinedHalfWidths = r1.Width()/2 + r2.Width()/2;
+		var combinedHalfHeights = r1.Height()/2 + r2.Height()/2;
+
+
+		if (Math.abs(vX) < combinedHalfWidths) {
+			if (Math.abs(vY) < combinedHalfHeights) {
+				var overlapX = combinedHalfWidths - Math.abs(vX);
+				var overlapY = combinedHalfHeights - Math.abs(vY);
+
+				if (overlapX >= overlapY) {
+					if (vY > 0) {
+						collisionSide = "top";
+
+						if (readjust) { r1.y = r1.y+overlapY; }
+					} else if (vY < 0) {
+						collisionSide = "bottom";
+
+						if (readjust) { r1.y = r1.y-overlapY; }
+					}
+				} else {
+					if (vX > 0) {
+						collisionSide = "left";
+
+						if (readjust) { r1.x = r1.x+overlapX; }
+					} else if (vX < 0) {
+						collisionSide = "right";
+
+						if (readjust) { r1.x = r1.x-overlapX; }
+					}
+				}
+			} else {
+				collisionSide = "none";
+			}
+		} else {
+			collisionSide = "none";
+		}
+
+
+		return collisionSide;
+	};
 
 
 	gm._RegisterActor(this);
@@ -457,14 +561,14 @@ var Tile = (function(x, y, foreground) {
 	gm._RegisterTile(this, foreground);
 });
 
-var BBox = (function(x, y, width, height, offsetx, offsety, solid) {
+var BBox = (function(x, y, width, height, offsetx, offsety, colMode) {
 	this.x = x;
 	this.y = y;
 	this.width = width;
 	this.height = height;
 	this.offsetx = offsetx;
 	this.offsety = offsety;
-	this.solid = solid;
+	this.colMode = colMode || 0;
 });
 
 
