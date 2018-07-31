@@ -134,19 +134,30 @@ gm.AddLogic("GreenKoopa", {
 	sprite: "koopatroopaWalking",
 	sprite_speed: 5/gm.frameRate,
 	maxHeight: 200,
-	maxWidth: 150,
+	maxWidth: 100,
 	gravity: 20,
 	force: -10,
-	vx: 0,
+	vx: 1,
 	vy: 0,
 	ax: 0,
 	ay: 0,
-	
+	fliptime: 0,
+	currentPos: 0,
 	
 	Update: function(){
 		
 		this.UpdateMe();
-		this.xscale = -1;
+		
+		/*this.fliptime += 1;
+		if (this.fliptime >= 30) {
+			this.xscale *= -1;
+			
+			this.fliptime = 0;
+		}*/
+		
+		
+		
+		// this.xscale = -1;
 		//this.x = this.x + 1;
 		//var movCount = this.x;
 		
@@ -162,16 +173,54 @@ gm.AddLogic("GreenKoopa", {
 			
 			this.sprite_index -= 3;
 		}*/
-		this.x += 1;
+		
+		
+		//this.ay = 0.09;
+		
+		//this.DoPhysics(true);
+		//this.xscale = -1;
+		
 		this.y += this.gravity;
 		
+		
+		
 		if(this.y >= this.maxHeight){
+			this.x += this.vx;
 			this.y = 240;
-			if(this.x >= this.maxWidth){
-				this.y -= 1;
-				this.x += 1;
-			}
+			this.xscale = -1;
 		}
+		//this.x += 1;
+		console.log(this.x);
+		if(this.x == this.maxWidth){
+			//this.xscale = -1;
+			if(this.vx > 0 && this.xscale == -1){
+				this.xscale *= 1;
+			}/*else{
+				this.xscale = -1;
+			}*/
+			
+			this.vx *= -1;
+			this.x += this.vx;
+			
+			//this.x = 250;
+			console.log(this.xscale);
+			console.log(this.x);
+			//this.x += -1;
+		}
+		
+		
+		/*do{
+			this.x += 1;
+			if(this.y >= this.maxHeight){
+				this.y = 240;
+			}
+		}while(this.x != 200);
+		
+		if(this.x >= 200){
+			this.x += 1;
+			this.y -= 1;
+		}
+		
 		
 		//if(this.y >= 240){this.x = 240}
 		
@@ -181,8 +230,13 @@ gm.AddLogic("GreenKoopa", {
 		}*/
 		
 		
-	}
-	
+	},
+	/*BumpInto: function(bumpObj, side) {
+		if (side != "none") {
+			console.log("WHOA!");
+			
+		}
+	},*/
 	
 	
 });
@@ -210,10 +264,22 @@ gm.AddLogic("Goomba", {
 });
 
 
+gm.AddLogic("SolidBlock", {
+	// sprite: "solidBoxFull",
+	solid: true,
+	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
+	xscale: 1/4,
+	yscale: 1/4,
+	bbox: undefined,
+});
+
+
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
 	var actor = gm.CreateActor(50, 50, "GreenKoopa");
+	//gm.BecomePhysical(actor);
+	
 	var actor = gm.CreateActor(75, 240, "Goomba");
 	
 	/*
@@ -227,6 +293,13 @@ gm.CreateScene("example1", function() {
 	});
 	*/
 	
+	
+	/*var actor = gm.CreateActor(0, 256-16, "SolidBlock");
+	gm.BecomeSolid(actor);
+	actor.bbox = gm.MakeBoundingBox(0, 0, 1000, 16, 0, 0);
+	actor.xscale = 500/64;
+	actor.visible = false;
+	*/
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
