@@ -271,62 +271,14 @@ gm.AddLogic("Mario", {
 		}
 
 
-
-
-		// *** Acceleration...
-		this.vx += this.ax;
-		this.vy += this.ay;
-		//
-		// *** Velocity...
-		this.x += this.vx;
-		this.y += this.vy;
-
-
-
-
-		// *** We "presume" we are no longer on the ground-- Unless a collision proves otherwise.
-		this.isOnGround = false;
 		//
 		//
-		var room = gm.GetRoomData();
-
-		for (var i = 0; i<gm.actorList.length; i++) {
-
-			var Q = gm.actorList[i];
-			//
-			if (Q.solid) {
-				var collisionSide = this.CollideWith(Q, true);
-				//
-				//
-				if (collisionSide === "bottom" && this.vy >= 0) {
-					this.vy = 0;
-					// this.ay = 0;
-					this.isOnGround = true;
-					this.jumpHold = 0;
-
-
-					// this.vy = -this.gravity;
-				} else if (collisionSide === "top" && this.vy <= 0) {
-					this.vy = 0;
-					this.jumpHold = 0;
-				} else if (collisionSide === "right" && this.vx >= 0) {
-					this.vx = 0;
-					this.ax = 0;
-				} else if (collisionSide === "left" && this.vx <= 0) {
-					this.vx = 0;
-					this.ax = 0;
-				}
-
-				/*
-				if (collisionSide !== "bottom" && this.vy > 0) {
-					this.isOnGround = false;
-				}
-				*/
-			}
-		}
+		// *** Automatically do the physics ("gm.BecomePhysical" automatically )
+		this.DoPhysics(true);
 		//
 		//
 		// *** Bound against the screen edges!
+		var room = gm.GetRoomData();
 		if (this.x < 0) {
 			this.x = 0;
 			this.vx = 0;
@@ -395,6 +347,26 @@ gm.AddLogic("Mario", {
 		// *** Mandatory call to the "me" function to make sure everything still works smoothly!
 >>>>>>> master
 		this.UpdateMe();
+	},
+	BumpInto: function(bumpObj, side) {
+		if (side === "bottom" && this.vy >= 0) {
+			this.vy = 0;
+			// this.ay = 0;
+			this.isOnGround = true;
+			this.jumpHold = 0;
+
+
+			// this.vy = -this.gravity;
+		} else if (side === "top" && this.vy <= 0) {
+			this.vy = 0;
+			this.jumpHold = 0;
+		} else if (side === "right" && this.vx >= 0) {
+			this.vx = 0;
+			this.ax = 0;
+		} else if (side === "left" && this.vx <= 0) {
+			this.vx = 0;
+			this.ax = 0;
+		}
 	}
 });
 
@@ -426,16 +398,22 @@ gm.CreateScene("example1", function() {
 
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
+	gm.BecomePhysical(actor);
+	
 	var actor = gm.CreateActor(0, 0, "Camera");
 >>>>>>> master
 
 
 	var actor = gm.CreateActor(200, 200, "SolidBlock");
+	gm.BecomeSolid(actor);
 	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
 
 
 	var room = gm.GetRoomData();
 	var actor = gm.CreateActor(0, room.height-16, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+
 	actor.bbox = gm.MakeBoundingBox(0, 0, room.width, 16, 0, 0);
 	actor.xscale = room.width/64;
 	actor.visible = false;
