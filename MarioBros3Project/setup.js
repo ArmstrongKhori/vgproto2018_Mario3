@@ -163,6 +163,33 @@ var GameManager = (function() {
 
 
 
+	// *** Gives the Actor behaviors and parameters for operating under physical properties (such as solid objects, gravity, acceleration, etc...)
+	this.BecomePhysical = function(thisActor) {
+		if (thisActor._type == "actor") {
+			thisActor.vx = 0;
+			thisActor.vy = 0;
+
+			thisActor.ax = 0;
+			thisActor.ay = 0;
+
+			thisActor.isOnGround = false;
+
+			
+			thisActor.DoPhysics = this._objFunction_DoPhysics;
+			// thisActor.BumpInto = undefined;
+		}
+	};
+	this.solidList = new Array();
+	this.BecomeSolid = function(thisActor) {
+		if (thisActor._type == "actor") {
+			thisActor.solid = true;
+
+			this.solidList.push(thisActor);
+		}
+	};
+
+
+
 
 
 
@@ -363,6 +390,34 @@ var GameManager = (function() {
 		var v = 0;
 		if (this.bbox != undefined) { v += this.bbox.height; }
 		return v;
+	};
+	this._objFunction_DoPhysics = function(readjust) {
+		// *** Acceleration...
+		this.vx += this.ax;
+		this.vy += this.ay;
+		//
+		// *** Velocity...
+		this.x += this.vx;
+		this.y += this.vy;
+
+
+		// *** We "presume" we are no longer on the ground-- Unless a collision proves otherwise.
+		this.isOnGround = false;
+		//
+		//
+		var room = gm.GetRoomData();
+
+		for (var i = 0; i<gm.solidList.length; i++) {
+
+			var Q = gm.solidList[i];
+			//
+			if (Q.solid) {
+				var collisionSide = this.CollideWith(Q,readjust);
+				if (this.BumpInto) {
+					this.BumpInto(Q, collisionSide);
+				}
+			}
+		}
 	};
 	//
 	//
