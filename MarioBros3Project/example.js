@@ -116,7 +116,15 @@ gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 
 
 
+il.AddTask("box", "box.png");
+//
+gm.AddSprite("solidBoxFull", "box", 0, 0, 64, 64, 1);
 
+
+
+
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 		if (this.Bottom() > 256) {
 			this.y -= (this.Bottom() - 256);
@@ -124,13 +132,30 @@ gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 			this.isOnGround = true;
 =======
 >>>>>>> master
+=======
+var SECOND = gm.frameRate;
+>>>>>>> master
 
 			this.ay = 0;
 		}
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+
+
+gm.AddLogic("SolidBlock", {
+	sprite: "solidBoxFull",
+	solid: true,
+	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
+	xscale: 1/4,
+	yscale: 1/4,
+	bbox: undefined,
+});
+
+>>>>>>> master
 gm.AddLogic("Camera", {
 	target: undefined,
 	Update: function() {
@@ -155,54 +180,65 @@ gm.AddLogic("Camera", {
 		// *** Finally, tell the game manager that THIS object is the camera!
 		gm.AssignCamera(this);
 	}
-})
+});
 
 gm.AddLogic("Mario", {
 	vx: 0,
 	vy: 0,
 	ax: 0,
 	ay: 0,
+	jumpHold: 0,
 	isOnGround: false,
-	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16, false),
+	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16),
+	Jump: function() {
+		this.vy = -150/SECOND;
+		this.ay = 0;
+		this.isOnGround = false;
+
+
+		this.jumpHold = SECOND*0.4;
+		// *** Mario can jump higher if he's moving faster!
+		this.jumpHold += SECOND*0.2*(Math.max(0, Math.abs(this.vx*SECOND) -120)/(60));
+	},
 	Update: function() {
 		var motionHori = ct.KeyIsDown(ct.KEY_LEFT)*-1 + 1*ct.KeyIsDown(ct.KEY_RIGHT);
 		var motionVert = ct.KeyIsDown(ct.KEY_UP)*-1 + 1*ct.KeyIsDown(ct.KEY_DOWN);
 		//
 		//
-		if (motionHori == 0 && motionVert == 0) {
-			// *** We're using Mario's "idle" sprite-- You know, the one we created earlier!
-			// *** When we're NOT moving, we change to an idle sprite and stop animating.
-			this.sprite = "smallMarioIdle";
-			this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
-			this.sprite_speed = 0;
-		}
-		else {
-			// *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
-			// *** When we're moving, we change to a walking sprite and start animating.
-			this.sprite = "smallMarioWalk"; 
-			// *** DON'T set index! Let it animate~~
-			this.sprite_speed = 12/gm.frameRate;
-		}
-		//
-		//
-		// *** Gravity takes effect if you're airborne!
-		if (!this.isOnGround) {
-			this.ay = 800/gm.frameRate/gm.frameRate;
-		}
-		//
+		var doingDash = ct.KeyIsDown(ct.KEY_X);
+
+
+
 		// *** Walk (or run)
-		if (ct.KeyIsDown(ct.KEY_X)) {
-			this.x += 6*motionHori;
+		var speedLimit;
+		if (doingDash) { speedLimit = 180; } // *** We are dashing!
+		else { speedLimit = 120; } // *** Otherwise, we are walking
+		//
+		if (Math.abs(this.vx) > speedLimit/SECOND) { // *** If we're going too fast...
+			this.ax = -Math.sign(this.vx) *Math.min(8/SECOND, Math.abs(this.vx)); // *** ... Slow down.
+		}
+		else if (motionHori == 0) { // *** If we stopped moving...
+			this.ax = -Math.sign(this.vx) *Math.min(8/SECOND, Math.abs(this.vx)); // *** ... Slow down.
+		}
+		else if (motionHori == -Math.sign(this.vx)) { // *** If we are fighting our momentum...
+			this.ax = -Math.sign(this.vx) *Math.min(12/SECOND, Math.abs(this.vx)); // *** ... Slow down A LOT.
+			// ??? <-- Skid!
 		}
 		else {
-			this.x += 4*motionHori;
+			// *** Otherwise: Accelerate us!
+			if (doingDash) {
+				this.ax = 6/SECOND*motionHori;
+			}
+			else {
+				this.ax = 4/SECOND*motionHori;
+			}
+			// this.vx = Math.sign(this.vx) *(speedLimit/gm.frameRate);
 		}
 
 		// *** JUMP!
 		if (ct.KeyWasPressed(ct.KEY_Z)) {
 			if (this.isOnGround) {
-				this.vy = -200/gm.frameRate;
-				this.isOnGround = false;
+				this.Jump();
 			}
 		}
 
@@ -210,6 +246,28 @@ gm.AddLogic("Mario", {
 		if (motionHori != 0) {
 			this.xscale = motionHori*1;
 			this.yscale = 1;
+		}
+
+
+
+
+		// *** Gravity takes effect if you're airborne!
+		if (this.isOnGround) {
+			// ??? <-- Check if there's something solid below you...
+		}
+		else {
+			if (this.jumpHold > 0) {
+				if (ct.KeyIsDown(ct.KEY_Z)) {
+					this.jumpHold -= 1;
+				}
+				else {
+					this.jumpHold = 0;
+				}
+			}
+			else
+			{
+				this.ay = 1500/SECOND/SECOND;
+			}
 		}
 
 
@@ -226,14 +284,95 @@ gm.AddLogic("Mario", {
 
 
 
-		// *** Bound against the bottom of the screen (for now).
+		// *** We "presume" we are no longer on the ground-- Unless a collision proves otherwise.
+		this.isOnGround = false;
+		//
+		//
 		var room = gm.GetRoomData();
-		if (this.Bottom() > room.height) {
-			this.y -= (this.Bottom() - room.height);
-			this.vy = 0;
-			this.isOnGround = true;
 
-			this.ay = 0;
+		for (var i = 0; i<gm.actorList.length; i++) {
+
+			var Q = gm.actorList[i];
+			//
+			if (Q.solid) {
+				var collisionSide = this.CollideWith(Q, true);
+				//
+				//
+				if (collisionSide === "bottom" && this.vy >= 0) {
+					this.vy = 0;
+					// this.ay = 0;
+					this.isOnGround = true;
+					this.jumpHold = 0;
+
+
+					// this.vy = -this.gravity;
+				} else if (collisionSide === "top" && this.vy <= 0) {
+					this.vy = 0;
+					this.jumpHold = 0;
+				} else if (collisionSide === "right" && this.vx >= 0) {
+					this.vx = 0;
+					this.ax = 0;
+				} else if (collisionSide === "left" && this.vx <= 0) {
+					this.vx = 0;
+					this.ax = 0;
+				}
+
+				/*
+				if (collisionSide !== "bottom" && this.vy > 0) {
+					this.isOnGround = false;
+				}
+				*/
+			}
+		}
+		//
+		//
+		// *** Bound against the screen edges!
+		if (this.x < 0) {
+			this.x = 0;
+			this.vx = 0;
+			this.ax = 0;
+		}
+		//
+		if (this.x > room.width) {
+			this.x = room.width;
+			this.vx = 0;
+			this.ax = 0;
+		}
+		//
+		if (this.y > room.height) {
+			this.y = room.height;
+
+			this.vy = 0;
+			// this.ay = 0;
+			this.isOnGround = true;
+			this.jumpHold = 0;
+		}
+
+
+
+
+
+
+		if (this.isOnGround && Math.abs(this.vx) > 1/SECOND)
+		{
+			if (Math.abs(this.vx) > 120/SECOND && doingDash) {
+				// *** When we're moving really fast, we change to a running sprite.
+				this.sprite = "smallMarioRun"; 
+			}
+			else {
+				// *** When we're moving, we change to a walking sprite.
+				this.sprite = "smallMarioWalk"; 
+			}
+
+
+			// *** DON'T set index! Let it animate~~
+			this.sprite_speed = 12/SECOND;
+		}
+		else {
+			// *** When we're NOT moving, we change to an idle sprite and stop animating.
+			this.sprite = "smallMarioIdle";
+			this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
+			this.sprite_speed = 0;
 		}
 
 
@@ -289,6 +428,17 @@ gm.CreateScene("example1", function() {
 	var actor = gm.CreateActor(100, 100, "Mario");
 	var actor = gm.CreateActor(0, 0, "Camera");
 >>>>>>> master
+
+
+	var actor = gm.CreateActor(200, 200, "SolidBlock");
+	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
+
+
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, room.height-16, "SolidBlock");
+	actor.bbox = gm.MakeBoundingBox(0, 0, room.width, 16, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
