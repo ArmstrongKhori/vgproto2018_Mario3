@@ -377,9 +377,9 @@ var GameManager = (function() {
 		thisThing.UpdateMe = this._objFunction_UpdateMe;
 		thisThing.Update = this._objFunction_Update;
 		thisThing.SpriteExists = this._objFunction_SpriteExists;
-<<<<<<< HEAD
+
 		thisThing.visible = true;
-=======
+
 		thisThing.Exists = this._objFunction_Exists;
 		//
 		thisThing.visible = true;
@@ -389,7 +389,7 @@ var GameManager = (function() {
 		thisThing.Bottom = this._objFunction_Bottom;
 		thisThing.Width = this._objFunction_Width;
 		thisThing.Height = this._objFunction_Height;
->>>>>>> master
+
 	}
 	this._RegisterTile = function(thisTile, foreground) {
 		if (foreground) { this.tileForeList.push(thisTile); }

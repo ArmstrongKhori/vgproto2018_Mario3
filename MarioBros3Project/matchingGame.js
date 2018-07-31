@@ -1,4 +1,4 @@
-var audio = new Audio('SpadePuzzle.mp3');
+var music = document.querySelector("#music")
 
 var r = 0;
 var c = 0;
@@ -7,7 +7,7 @@ var c = 0;
 // Pulling sprite files for shop
 il.AddTask("smallMinigameMario", "smallMinigameMario.png");
 il.AddTask("largeMinigameMario", "largeMinigameMario.png");
-il.AddTask("tanukiMiniGameMario", "tanukiMinigameMario.png")
+il.AddTask("tanukiMinigameMario", "tanukiMinigameMario.png")
 il.AddTask("shopbackground", "MiniGameBackground.png");
 il.AddTask("table", "Table.png");
 il.AddTask("toad", "Toad.png");
@@ -22,17 +22,14 @@ il.AddTask("playerCursor", "playercursor.png");
 gm.AddSprite("shopscene", "shopbackground", 0, 0, 256, 256, 1);
 gm.AddSprite("table", "table", 0, 0, 96, 32, 1);
 gm.AddSprite("smallMinigameM", "smallMinigameMario", 0, 0, 48, 64, 1);
-gm.AddSprite("largeMinigameM", "largeMinigameMario", 0, 0, 96, 128, 1);
-gm.AddSprite("tanukiMinigameM", "tanukiMinigameMario", 0, 0, 144, 192, 1);
+gm.AddSprite("largeMinigameM", "largeMinigameMario", 0, 0, 48, 64, 1);
+gm.AddSprite("tanukiMinigameM", "tanukiMinigameMario", 0, 0, 48, 64, 1);
 gm.AddSprite("toad", "toad", 0, 0, 32, 48, 1);
 
 
 // Creating Minigame Sprites
 gm.AddSprite("MiniGameBackground", "matchingGameBackground", 0, 0, 256, 256, 1);
 gm.AddSprite("cursor", "playerCursor", 0, 0, 32, 48, 1);
-
-
-
 
 
 
@@ -51,6 +48,7 @@ gm.AddSprite("cardIconFlower", "cardicons", 22*3, 0, 22, 32, 1);
 gm.AddSprite("cardIconStar", "cardicons", 22*4, 0, 22, 32, 1);
 gm.AddSprite("cardIconOneUp", "cardicons", 22*5, 0, 22, 32, 1);
 
+//Pushing card sprites
 var iconNumberSprites = new Array();
 iconNumberSprites.push("cardIconTenCoin");
 iconNumberSprites.push("cardIconTwentyCoin");
@@ -111,6 +109,7 @@ gm.AddLogic("Cursor", {
 
 			if (this.delay <= 0) {
 				if(this.storeFirst.symbol == this.storeSecond.symbol){
+					//giveItem();
 					this.matches += 1;
 				}else{
 
@@ -226,7 +225,7 @@ gm.CreateScene("matchingGame", function() {
 				[3,0,2,3,0,1],
 				[3,4,2,0,4,3]];
 
-
+	// Makes unflipped cards for every row and column
 	var allCards = new Array();
 	for(var xx = 0; xx < 6; xx++){
 		for(var yy = 0; yy < 3; yy++){
@@ -266,10 +265,17 @@ gm.CreateScene("shop", function() {
 	var toad = gm.CreateTile(192, 88, true);
 	toad.sprite = "toad";
 
-	var small = gm.CreateTile(16, 72, true);
-	small.sprite = "smallMinigameM";
+	//var small = gm.CreateTile(16, 72, true);
+	//small.sprite = "smallMinigameM";
+
+	//var large = gm.CreateTile(16, 72, true);
+	//large.sprite = "largeMinigameM";
+
+	var tanuki = gm.CreateTile(16, 72, true);
+	tanuki.sprite = "tanukiMinigameM";
 
 	var actor = gm.CreateActor(0, 0);
+	// Starts minigame if the X key is pressed
 	actor.Update = function() {
 		if(ct.KeyWasPressed(ct.KEY_X)) {gm.StartScene("matchingGame"); }
 	}
@@ -278,17 +284,28 @@ gm.CreateScene("shop", function() {
 
 
 
-
+// Starts the minigame section
 gm.StartScene("shop");
+playMusic();
 
-
-
-
-function firstTurn() {
-
-
+function playMusic(){
+	music.play();	
 }
 
-function secondTurn() {
+// Will add item and amount of points to HUD depending on the 
+// item selected
+/* function giveItem() {
+	if(this.storeFirst.symbol && this.storeFirst.symbol == 0){
+	// 
+	}else if(this.storeFirst.symbol && this.storeFirst.symbol == 1){
 
-}
+	}else if(this.storeFirst.symbol && this.storeFirst.symbol == 2){
+
+	}else if(this.storeFirst.symbol && this.storeFirst.symbol == 3){
+
+	}else if(this.storeFirst.symbol && this.storeFirst.symbol == 4){
+
+	}else if(this.storeFirst.symbol && this.storeFirst.symbol == 5)
+
+} */
+
