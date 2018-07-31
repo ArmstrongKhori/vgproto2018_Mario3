@@ -134,16 +134,14 @@ gm.AddLogic("GreenKoopa", {
 	sprite: "koopatroopaWalking",
 	sprite_speed: 5/gm.frameRate,
 	maxHeight: 200,
-	maxWidth: 200,
+	maxWidth: 150,
 	gravity: 20,
 	force: -10,
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: 0,
 	
-	this.makeMeJump : function(){
-		this.y += this.force;
-		this.x = this.x + 1;
-		this.xscale = 1;
-		//this.y = this.y - 1;
-	}
 	
 	Update: function(){
 		
@@ -158,17 +156,30 @@ gm.AddLogic("GreenKoopa", {
 		//console.log(movCount);
 		//console.log(this.x);
 		
-		this.sprite_index += 5/gm.frameRate;
+		/*this.sprite_index += 5/gm.frameRate;
 		if (this.sprite_index >= 3) {
 			this.y -= 10;
 			
 			this.sprite_index -= 3;
+		}*/
+		this.x += 1;
+		this.y += this.gravity;
+		
+		if(this.y >= this.maxHeight){
+			this.y = 240;
+			if(this.x >= this.maxWidth){
+				this.y -= 1;
+				this.x += 1;
+			}
 		}
 		
-		if(this.x > this.maxWidth){
+		//if(this.y >= 240){this.x = 240}
+		
+		/*if(this.x > this.maxWidth){
 			
-			this.makeMeJump();
-		}
+			this.y -= 1;
+		}*/
+		
 		
 	}
 	
@@ -185,11 +196,12 @@ gm.AddLogic("Goomba", {
 	Update: function(){
 		
 		this.UpdateMe();
-		if(this.x < this.maxWidth){
+		this.x = this.x + 1;
+		/*if(this.x < this.maxWidth){
 			this.x = this.x + 1;
 		}else{
 			//this.x = this.x - 1;
-		}
+		}*/
 		
 	}
 	
@@ -201,7 +213,7 @@ gm.AddLogic("Goomba", {
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
-	var actor = gm.CreateActor(0, 240, "GreenKoopa");
+	var actor = gm.CreateActor(50, 50, "GreenKoopa");
 	var actor = gm.CreateActor(75, 240, "Goomba");
 	
 	/*
