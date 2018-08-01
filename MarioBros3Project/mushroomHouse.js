@@ -1,50 +1,163 @@
+var SECOND = gm.frameRate;
 
-
-/* *** These are two important "global" objects:
-gm ~ "Game Manager" object. Handles game logic and holds important information.
-il ~ "Image Loader" object. Use for loading pictures.
-ct ~ "Controller" object. Use it for reading keyboard inputs.
-*/
-
-
-
-// *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
 il.AddTask("mario", "Mario.png");
-//
-// *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
+
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
 gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
-// Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
-// *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
+
+
+il.AddTask("houseScene", "HouseScene.png");
+
+gm.AddSprite("mushroomhouse", "houseScene", 0, 0, 256, 256, 1);
 
 
 
-// *** Same as above-- Different image.
-il.AddTask("backdrop", "level.png");
-//
-// *** Create a usable sprite out of it. Crop out an interesting bit (rather than the sky)-- Only 1 frame, of course.
-gm.AddSprite("level1background", "backdrop", 0, 432-256, 512, 256, 1);
-gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
+gm.CreateScene("mushroomHouse", function() {
+
+	gm.SetRoomData({
+		width: 256,
+		height: 256,
+	});
 
 
 
-il.AddTask("box", "box.png");
-//
-gm.AddSprite("solidBoxFull", "box", 0, 0, 64, 64, 1);
+	var mushroomHouse = gm.CreateTile(0, 0, false, {
+		sprite: "mushroomhouse"
+	});
+	
+
+	// *** We create an "actor"-- These are objects that can "interact" with the engine.
+	var actor = gm.CreateActor(100, 100, "Mario");
+	gm.BecomePhysical(actor);
+	
 
 
 
+	// Lower Floor
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 168, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, room.width, 16, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
 
 
-var SECOND = gm.frameRate;
+	// Left Upper Floor
+	// *Fix the 104 value*
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 104, "SolidBlock");
+	gm.BecomeSolid(actor);
+	actor.bbox = gm.MakeBoundingBox(0, 0, 48, 80, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+	// Right Upper Floor
+	// *Fix the 104 value*
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(208, 104, "SolidBlock");
+	gm.BecomeSolid(actor);
+	actor.bbox = gm.MakeBoundingBox(0, 0, 48, 80, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
 
 
+	// Left Wall
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 56, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 54, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+	// Right Wall
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(240, 56, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 54, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+
+	// Left First Ceiling
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 26, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 32, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+	// Right First Ceiling
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(224, 26, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 32, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+
+	// Left Second Ceiling
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 8, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 48, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+	// Right Second Ceiling
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(208, 8, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 48, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+
+	// Left Third Ceiling
+	// *Ceiling too low*
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(0, 0, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+	// Right Third Ceiling
+	// *Ceiling too low*
+	var room = gm.GetRoomData();
+	var actor = gm.CreateActor(176, 0, "SolidBlock");
+	gm.BecomeSolid(actor);
+
+	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 32, 0, 0);
+	actor.xscale = room.width/64;
+	actor.visible = false;
+
+
+
+	// Chest bounding boxes
+	var room = gm.GetRoomData();
+	var chest = gm.CreateActor(64+48*0, 136, "Chest");
+	chest.bbox = gm.MakeBoundingBox(0, 0, 32, 32, 0, 0);
+
+	var chest = gm.CreateActor(64+48*1, 136, "Chest");
+	chest.bbox = gm.MakeBoundingBox(0, 0, 32, 32, 0, 0);
+
+	var chest = gm.CreateActor(64+48*2, 136, "Chest");
+	chest.bbox = gm.MakeBoundingBox(0, 0, 32, 32, 0, 0);
+});
 
 
 
 gm.AddLogic("SolidBlock", {
-	sprite: "solidBoxFull",
+	sprite: " ",
 	solid: true,
 	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
 	xscale: 1/4,
@@ -52,31 +165,24 @@ gm.AddLogic("SolidBlock", {
 	bbox: undefined,
 });
 
-gm.AddLogic("Camera", {
-	target: undefined,
+gm.AddLogic("Chest", {
+	bbox: undefined,
 	Update: function() {
-		// *** If the camera doesn't have a target...
-		if (!this.target) {
-			// *** ... Find a "Mario" object and use that!
-			this.target = gm.FindByLogic("Mario");
+
+		var mario = gm.FindByLogic("Mario");
+
+
+		if (ct.KeyWasPressed(ct.KEY_X)) {
+			if (mario.isOnGround) {
+				if (mario.CollideWith(this) != "none") {
+					alert("WHOAAAAAAAAAAAAAAA!");
+				}
+			}
 		}
-		//
-		// *** If you have a target...
-		if (this.target) {
-			// *** ... Follow the target, but from half a screen away!
-			this.x = this.target.x - 256/2;
-			this.y = 0;
-		}
-		//
-		// *** Clamp the X and Y so that they don't go past the room's boundaries.
-		var room = gm.GetRoomData();
-		this.x = Math.max(0, Math.min(this.x, room.width-256));
-		this.y = Math.max(0, Math.min(this.y, room.height-256));
-		//
-		// *** Finally, tell the game manager that THIS object is the camera!
-		gm.AssignCamera(this);
+
 	}
 });
+
 
 gm.AddLogic("Mario", {
 	vx: 0,
@@ -259,62 +365,5 @@ gm.AddLogic("Mario", {
 	}
 });
 
+gm.StartScene("mushroomHouse");
 
-
-
-gm.CreateScene("example1", function() {
-	
-	gm.SetRoomData({
-		width: 512,
-		height: 256,
-	});
-
-
-	// *** We create an "actor"-- These are objects that can "interact" with the engine.
-	var actor = gm.CreateActor(100, 100, "Mario");
-	gm.BecomePhysical(actor);
-	
-	var actor = gm.CreateActor(0, 0, "Camera");
-
-
-	var actor = gm.CreateActor(200, 200, "SolidBlock");
-	gm.BecomeSolid(actor);
-	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
-
-
-	var room = gm.GetRoomData();
-	var actor = gm.CreateActor(0, room.height-16, "SolidBlock");
-	gm.BecomeSolid(actor);
-
-
-	actor.bbox = gm.MakeBoundingBox(0, 0, room.width, 16, 0, 0);
-	actor.xscale = room.width/64;
-	actor.visible = false;
-
-
-	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
-	var background = gm.CreateTile(0, 0, false, {
-		sprite: "level1background" // *** Use that background sprite we made!
-	});
-});
-
-
-
-gm.CreateScene("example2", function() {
-	
-	gm.SetRoomData({
-		width: 256,
-		height: 256,
-	});
-
-	var actor = gm.CreateActor(10, 10, "Mario");
-	var actor = gm.CreateActor(0, 0, "Camera");
-
-
-	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
-	var background = gm.CreateTile(0, 0, false);
-	background.sprite = "level2background"; // *** Use that background sprite we made!
-});
-//
-//
-gm.StartScene("example1");
