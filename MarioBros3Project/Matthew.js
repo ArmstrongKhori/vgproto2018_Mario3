@@ -27,6 +27,10 @@ il.AddTask("pBlock", "pBlock.png");
 
 il.AddTask("emptyBlock", "emptyBlock.png");
 
+il.AddTask("reverseLeaf", "leaf.png");
+
+gm.AddSprite("reverseLeaf", "reverseLeaf", 16, 0, 16, 14, 1);
+
 gm.AddSprite("emptyBlock", "emptyBlock", 0, 0, 16, 16, 1);
 
 gm.AddSprite("pBlock", "pBlock", 0, 0, 16, 16, 2);
@@ -217,9 +221,6 @@ gm.AddLogic("Mario", {
 		// *** Remove it!
 		if (ct.KeyIsDown(ct.KEY_SPACE)) { this.Destroy(); }
 
-		// *** Go to another scene
-		if (ct.KeyIsDown(ct.KEY_SHIFT)) { gm.StartScene("example2"); }
-
 
 
 		// *** Mandatory call to the "me" function to make sure everything still works smoothly!
@@ -234,6 +235,11 @@ gm.AddLogic("Mario", {
 
 
 			// this.vy = -this.gravity;
+
+
+			if (bumpObj.pSwitch) {
+				bumpObj.TriggerSwitch();
+			}
 		} else if (side === "top" && this.vy <= 0) {
 			this.vy = 0;
 			this.jumpHold = 0;
@@ -251,7 +257,64 @@ gm.AddLogic("Mario", {
 	}
 });
 
+gm.AddLogic("leaf", {
+	isActive: false,
+	out: false,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
 
+	Launch: function() {
+		this.ay = 900/SECOND/SECOND;
+		this.vy = -11.5;
+	},
+	Update: function(){
+		this.sprite = "leaf";
+		this.sprite_index = 0;
+
+		if (this.vy > 10/SECOND) {
+			this.vy = 10/SECOND;
+		}
+
+		//need to add if statements here to make the animation of the leaf work
+
+
+		this.DoPhysics();
+		this.UpdateMe();
+
+	}
+});
+
+
+gm.AddLogic("coin2", {
+	isActive: false,
+	out: false,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
+	sprite: "coin2",
+	sprite_index: 0,
+	sprite_speed: 8/SECOND,
+
+	Launch: function() {
+		this.ay = 900/SECOND/SECOND;
+		this.vy = -11.5;
+
+
+		this.poofTimer = (Math.abs(this.vy) / this.ay) *1.8;
+	},
+	Update: function(){
+
+		if (this.poofTimer > 0) {
+			this.poofTimer -= 1;
+
+			if (this.poofTimer <= 0) {
+				this.Destroy();
+			}
+		}
+
+		//add if statements for coin logic
+		
+		this.DoPhysics();
+		this.UpdateMe();
+	}
+});
 
 
 gm.AddLogic("Mushroom", {
@@ -293,8 +356,75 @@ gm.AddLogic("Mushroom", {
 		this.DoPhysics(this.out);
 		//
 		this.UpdateMe();
-	},
-	BumpInto: function(bumpObj, side) {
+		},
+
+		BumpInto: function(bumpObj, side) {
+		if (side === "bottom" && this.vy >= 0) {
+			this.vy = 0;
+			// this.ay = 0; 
+			
+			this.isOnGround = true;
+			
+
+
+			// this.vy = -this.gravity;
+		} else if (side === "top" && this.vy <= 0) {
+			this.vy = 0;
+
+			
+		} else if (side === "right" && this.vx >= 0) {
+			this.vx *= -1;
+			this.ax = 0;
+
+		} else if (side === "left" && this.vx <= 0) {
+			this.vx *= -1;
+			this.ax = 0;
+
+		}
+
+		if (side !== "none") {
+			
+		}
+
+		/*
+		if (side !== "bottom" && this.vy > 0) {
+			this.isOnGround = false;
+		}
+		*/
+		}
+	});
+
+gm.AddLogic("1up", {
+	isActive: false,
+	out: false,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
+
+//mushrooms update function. all logic for the mushroom goes in this update function
+	Update: function(){
+		this.sprite = "1up";
+		this.sprite_index = 0;
+		
+		var isOutOfBox2 = (this.y <= this.myBlock.y - 16);
+		if (this.isActive == true){
+
+			if (isOutOfBox2) {
+				//these two values are affecting the way the mushroom moves and falls. need to adjust numbers
+				this.ay = 4670/SECOND/SECOND;
+				this.vx = 1.5;
+				this.out = true;
+				//this.vx = 1;
+				//console.log("if");
+
+			}else{
+				this.vy = -1;
+				//console.log("else");
+			}
+			this.DoPhysics(this.out);
+			this.UpdateMe();
+				}
+
+			},
+			BumpInto: function(bumpObj, side) {
 		if (side === "bottom" && this.vy >= 0) {
 			this.vy = 0;
 			// this.ay = 0; 
@@ -328,6 +458,47 @@ gm.AddLogic("Mushroom", {
 		}
 		*/
 	}
+
+});
+
+gm.AddLogic("pBlock",{
+	isActive: false,
+	out: false,
+	pSwitch: true,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
+	sprite: "pBlock",
+	sprite_index: 0,
+	sprite_speed: 8/SECOND,
+
+
+	TriggerSwitch: function() {
+		this.sprite = "pBlockDown";
+		this.solid = false;
+	},
+	Update: function(){
+		
+
+		if (this.y <= this.myBlock.y - 16) {
+			this.out = true;
+		}
+
+		var pBlockPress = (this.y <= this.myBlock.y - 16);
+		if (this.isActive == true){
+
+			if (this.out){
+
+				// this.ay = 800/SECOND/SECOND;
+				this.vx = 0;
+				this.vy = 0;
+				this.out = true;
+			}else{
+				this.vy = -1;
+			}
+		}
+
+		this.DoPhysics();
+		this.UpdateMe();
+	}
 });
 
 gm.AddLogic("questionBlock2", {
@@ -355,8 +526,42 @@ gm.AddLogic("questionBlock2", {
 					mushroom.isActive = true;
 					break;
 
-				case "coin":
-					console.log("coin");
+				case "coin2":
+					var coin2 = gm.CreateActor(this.x, this.y, "coin2");
+					gm.BecomePhysical(coin2);
+
+
+					coin2.myBlock = this;
+					coin2.isActive = true;
+
+					coin2.Launch();
+					break;
+
+				case "1up":
+					var oneUp = gm.CreateActor(this.x, this.y, "1up");
+					gm.BecomePhysical(oneUp);
+
+					oneUp.myBlock = this;
+					oneUp.isActive = true;
+					break;
+
+				case "leaf":
+					var leaf = gm.CreateActor(this.x, this.y, "leaf");
+					gm.BecomePhysical(leaf);
+
+					leaf.myBlock = this;
+					leaf.isActive = true;
+
+					leaf.Launch();
+					break;
+
+				case "pBlock":
+					var pBlock = gm.CreateActor(this.x, this.y, "pBlock");
+					gm.BecomePhysical(pBlock);
+					gm.BecomeSolid(pBlock);
+
+					pBlock.myBlock = this;
+					pBlock.isActive = true;
 					break;
 
 				default: 
@@ -401,6 +606,8 @@ gm.CreateScene("example1", function() {
 		sprite: "level1background" // *** Use that background sprite we made!
 	});
 
+	
+
 	var coin = gm.CreateActor(150, 70);
 	coin.sprite = "coin2";
 	coin.sprite_speed = 8/gm.frameRate;
@@ -415,11 +622,13 @@ gm.CreateScene("example1", function() {
 		if (ct.KeyIsDown(ct.KEY_X)){ this.sprite = "pBlockDown";}
 	}
 
-	
+	var reverseLeaf = gm.CreateActor(50,150);
+	reverseLeaf.sprite = "reverseLeaf";
+	reverseLeaf.sprite_speed = 8/gm.frameRate;
 
-	var leaf = gm.CreateActor(50,150);
+	/*var leaf = gm.CreateActor(50,150);
 	leaf.sprite = "leaf";
-	leaf.sprite_speed = 6/gm.frameRate;
+	leaf.sprite_speed = 6/gm.frameRate;*/
 
 	var oneUp = gm.CreateActor(200,200);
 	oneUp.sprite = "1up";
@@ -435,11 +644,29 @@ gm.CreateScene("example1", function() {
 	qBlock.name = "question block";
 	qBlock.type = "mushroom";
 
-	var qBlockTwo = gm.CreateActor(150,200, "questionBlock2");
+	var qBlockTwo = gm.CreateActor(148,200, "questionBlock2");
 	qBlockTwo.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlockTwo);
 	qBlockTwo.name = "question block";
-	qBlockTwo.type = "coin";
+	qBlockTwo.type = "coin2";
+
+	var qBlockThree = gm.CreateActor(50,200, "questionBlock2");
+	qBlockThree.sprite_speed = 8/gm.frameRate;
+	gm.BecomeSolid(qBlockThree);
+	qBlockThree.name = "question block";
+	qBlockThree.type = "leaf";
+
+	var qBlockFour = gm.CreateActor(116,200, "questionBlock2");
+	qBlockFour.sprite_speed = 8/gm.frameRate;
+	gm.BecomeSolid(qBlockFour);
+	qBlockFour.name = "question block";
+	qBlockFour.type = "1up";
+
+	var qBlockFive = gm.CreateActor(66,200, "questionBlock2");
+	qBlockFive.sprite_speed = 8/gm.frameRate;
+	gm.BecomeSolid(qBlockFive);
+	qBlockFive.name = "question block";
+	qBlockFive.type = "pBlock";
 
 	 // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
 
