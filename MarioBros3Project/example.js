@@ -33,7 +33,8 @@ il.AddTask("MARIO", "mario image hub1.png");
 gm.AddSprite("spritehud", "MARIO",0,0,256,28,1);
 
 
-
+il.AddTask("PINK","mario image hub2 - Copy.png")
+gm.AddSprite("pinkhud", "PINK",0,0,256,28,1);
 
 
 
@@ -158,6 +159,59 @@ gm.AddLogic("Mario", {
 	}
 });
 
+
+//================================================================================================
+gm.AddLogic("HUD2",{
+	sprite:"pinkhud",
+	frameCount: 0,
+	visible: true,
+
+	PadText: function(num, size){
+		var m = num+"";
+		while (s.length < size) m = "0" + m;
+		return m;
+	},
+	update: function(){
+		var marioWorld = 1;
+		var marioLives = 0;
+
+	},
+
+	AddAllTheLives: function(HIGHonMARIOlives){
+		this.lives += HIGHonMARIOlives;
+	},
+	AddAllTheWorlds: function(whatevmariodid){
+		this.world += whatevmariodid;
+	},
+
+	Draw: function() {
+		var camera = gm.FindByLogic("Camera");
+		this.x = camera.x;
+		this.y = camera.y +256-28;
+
+
+
+		this.DrawMe();
+
+
+		var hud = gm.FindByLogic("HUD");
+
+		var text = "WORLD:"+hud.world;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 5, this.y+14);
+
+		var text = "[M] X: "+hud.lives;
+		gm._context.font = "8px lol";
+		gm._context.fillText(text, 0, this.y+24);
+
+
+
+	},
+
+});
+//================================================================================================
+
+
 gm.AddLogic("HUD", {
 	sprite: "spritehud",
 	frameCount: 0,
@@ -169,7 +223,7 @@ gm.AddLogic("HUD", {
 	    return s;
 	},
 	Update: function() {
-		var marioScore = 175300;
+		var marioScore = 1000;
 		var marioLives = 0;
 		var marioCoins = 0;
 		var marioWorld = 8;
@@ -180,7 +234,6 @@ gm.AddLogic("HUD", {
  	if (ct.KeyWasPressed(ct.KEY_U)) {
  		this.AddAllTheLives = this.AddAllTheLives + 100;
  	}
-			
 
 
 		
@@ -191,42 +244,45 @@ gm.AddLogic("HUD", {
 				this.frameCount = 0;
 			}
 		}
-
-
+/*
 		this.AddALLTHESCORES(1000);
-		this.AddAllTheCoins(1);
+		
 		this.AddAllTheLives(0)
-
-		// ========================================================================================
-
-
-		//==========================================================================================
-
-
+		*/
+		this.AddAllTheCoins(0);
 	},
+		
+	
+
+
 	score: 0,
-	lives: 0,
+	lives: 4,
 	coins: 0,
 	world: 1,
 	timer: 300,
+
+	/*PowerInMarioPants: function(powerMARIO){
+		this.pictures = powerMARIO;
+	}*/
+
+	AddAllTheWorlds: function(whatevmariodid){
+		this.world += whatevmariodid;
+	},
 
 	AddALLTHESCORES: function(theSCoreValueWereLookingFor){
 		this.score += theSCoreValueWereLookingFor;
 	},
 	AddAllTheCoins: function(shinyThingInMarioPants){
-		this.coins = shinyThingInMarioPants;
-	
+		this.coins += shinyThingInMarioPants;
+		//
+		if(this.coins >= 100){
+			this.coins -= 100;
+			this.lives += 1;                     
+		}
 	},
 	AddAllTheLives: function(HIGHonMARIOlives){
 		this.lives += HIGHonMARIOlives;
-		if(this.coins >= 100){
-			this.coin -= 100;
-			this.lives += 1;                     
-		}
-		if(this.lives){//get mario dying function
-		}
-		else if
-
+		
 	},
 
 	Draw: function() {
@@ -243,7 +299,7 @@ gm.AddLogic("HUD", {
 		gm._context.font = "8px lol";
 		gm._context.fillText(text, 120, this.y+24);
 
-		var text = this.PadText(this.score,6)+"  ";
+		var text = this.PadText(this.score,7)+"  ";
 		gm._context.font = "8px lol";
 		gm._context.fillText(text, 60, this.y+24);
 
@@ -258,6 +314,8 @@ gm.AddLogic("HUD", {
 		var text = "[M] X: "+ this.lives;
 		gm._context.font = "8px lol";
 		gm._context.fillText(text, 0, this.y+24);
+
+		
 	}
 });
 
@@ -280,6 +338,8 @@ gm.CreateScene("example1", function() {
 	var actor = gm.CreateActor(0, 0, "Camera");
 
 	var hud = gm.CreateActor(0, 256-28, "HUD");
+	var hud2 = gm.CreateActor(0,256-28, "HUD2");
+	
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
