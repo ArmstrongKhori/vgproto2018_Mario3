@@ -22,17 +22,24 @@ gm.CreateScene("titleScreen", function(){
 	var threeLogo = gm.CreateActor(112, 93, {
 		sprite: "threeLogo",
 		sprite_index: 0,
-		sprite_speed: 5/SECOND,
+		sprite_speed: 8/SECOND,
 		Update: function() {
-			var sprite = gm.GetSprite(this.sprite);
-			sprite.frameCount
+			var sprite;
+			if (typeof this.sprite == "string") { sprite = gm.GetSprite(this.sprite); }
+			else { sprite = this.sprite; }
+			 
+			console.log(sprite);
+
+
 			this.sprite_index += this.sprite_speed;
 			//
-			if (this.sprite_index >= sprite.frameCount) {
+			if (this.sprite_index >= sprite.frameCount-1) {
+				this.sprite_index = sprite.frameCount-1;
 				this.sprite_speed *= -1;
 			}
 
 			if (this.sprite_index < 0) {
+				this.sprite_index = 0;
 				this.sprite_speed *= -1;
 			}
 
@@ -60,7 +67,7 @@ gm.CreateScene("titleScreen", function(){
 
 
 
-	var playercursor = gm.CreateActor(72, 144, "selectCursor");
+	var playercursor = gm.CreateActor(84, 144, "selectCursor");
 
 
 
