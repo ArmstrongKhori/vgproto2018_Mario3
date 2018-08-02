@@ -62,13 +62,7 @@ il.AddTask("box", "box.png");
 gm.AddSprite("solidBoxFull", "box", 0, 0, 64, 64, 1);
 
 
-
-
-
 var SECOND = gm.frameRate;
-
-
-
 
 
 gm.AddLogic("SolidBlock", {
@@ -302,8 +296,6 @@ gm.AddLogic("Mario", {
 				this.ay = 1500/SECOND/SECOND;
 			}
 		}
-
-
 		//
 		//
 		// ============================================================================================================
@@ -336,8 +328,6 @@ gm.AddLogic("Mario", {
 			this.isOnGround = true;
 			this.jumpHold = 0;
 		}
-
-
 
 
 		// ============================================================================================================
@@ -406,10 +396,9 @@ gm.AddLogic("Mario", {
 		this.UpdateMe();
 
 
-
-
 		if (ct.KeyWasPressed(ct.KEY_ENTER)) {
-			this.PowerUp_Mushroom();
+			if (this.state == this.STATE_SMALL) { this.PowerUp_Mushroom(); }
+			else { this.PowerUp_Leaf(); }
 		}
 
 		if (ct.KeyWasPressed(ct.KEY_SHIFT)) {
