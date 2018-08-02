@@ -28,7 +28,6 @@ gm.CreateScene("titleScreen", function(){
 			if (typeof this.sprite == "string") { sprite = gm.GetSprite(this.sprite); }
 			else { sprite = this.sprite; }
 			 
-			console.log(sprite);
 
 
 			this.sprite_index += this.sprite_speed;
