@@ -83,7 +83,7 @@ var GameManager = (function() {
 			var act = this.actorList[i];
 			if (act.__logic == thisLogic) { return act; }
 		}
-	}
+	};
 
 	
 	this.CreateActor = function(x, y, params) {
@@ -101,6 +101,12 @@ var GameManager = (function() {
 				actor[key] = params[key];
 			}
 		}
+		//
+		//
+		if (actor.OnCreate) {
+			actor.OnCreate();
+		}
+		//
 		//
 		return actor;
 	};
@@ -152,6 +158,7 @@ var GameManager = (function() {
 			this.tileBackList = new Array();
 			this.tileForeList = new Array();
 			this.actorList = new Array();
+			this.solidList = new Array();
 
 
 
@@ -166,23 +173,23 @@ var GameManager = (function() {
 	// *** Gives the Actor behaviors and parameters for operating under physical properties (such as solid objects, gravity, acceleration, etc...)
 	this.BecomePhysical = function(thisActor) {
 		if (thisActor._type == "actor") {
-			thisActor.vx = 0;
-			thisActor.vy = 0;
+			thisActor.vx = thisActor.vx || 0;
+			thisActor.vy = thisActor.vy || 0;
 
-			thisActor.ax = 0;
-			thisActor.ay = 0;
+			thisActor.ax = thisActor.ax || 0;
+			thisActor.ay = thisActor.ay || 0;
 
 			thisActor.isOnGround = false;
 
 			
 			thisActor.DoPhysics = this._objFunction_DoPhysics;
-			// thisActor.BumpInto = undefined;
+			thisActor.BumpInto = thisActor.BumpInto || undefined;
 		}
 	};
 	this.solidList = new Array();
 	this.BecomeSolid = function(thisActor) {
 		if (thisActor._type == "actor") {
-			thisActor.solid = true;
+			thisActor.solid = thisActor.solid || true;
 
 			this.solidList.push(thisActor);
 		}
