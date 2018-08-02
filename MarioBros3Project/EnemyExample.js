@@ -15,6 +15,7 @@ il.AddTask("koopatroopa", "koopa-right.png");
 il.AddTask("koopatroopaWings", "KoopawithWings(good2)right.png");
 il.AddTask("goombaWings", "good-goomba-wings.png");
 il.AddTask("piranhaPlain", "piranha2.png");
+il.AddTask("piranhaFire", "fireball piranha red-right.png");
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
@@ -29,12 +30,13 @@ gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 2, 20/2, 27);
 //gm.AddSprite("koopatroopaShell", "koopatroopa", 24*2, 0, 24, 24, 4, 19/2, 23);
 //koopatroopaWings
 gm.AddSprite("koopatroopaWalkingWings", "koopatroopaWings", 20*0, 0, 20, 27, 3, 20/2, 27);
-
-//gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32);
 //goombaWings
 gm.AddSprite("goombaWalkingWings", "goombaWings", 24*0, 0, 24, 24, 4, 24/2, 24);
 //piranha
 gm.AddSprite("plainPiranha", "piranhaPlain", 16*0, 0, 16, 32, 2, 16/2, 32);
+
+//firepiranha
+gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32);
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
@@ -300,93 +302,21 @@ gm.AddLogic("GreenKoopa", {
 	Update: function(){
 		this.UpdateMe();
 		
-		/*this.fliptime += 1;
-		if (this.fliptime >= 30) {
-			this.xscale *= -1;
-			
-			this.fliptime = 0;
-		}*/
-		
-		
-		
-		// this.xscale = -1;
-		//this.x = this.x + 1;
-		//var movCount = this.x;
-		
-		
-		//console.log(movCount);
-		
-		//console.log(movCount);
-		//console.log(this.x);
-		
-		/*this.sprite_index += 5/gm.frameRate;
-		if (this.sprite_index >= 3) {
-			this.y -= 10;
-			
-			this.sprite_index -= 3;
-		}*/
-		
-		
-		//this.ay = 0.09;
-		
-		//this.DoPhysics(true);
-		//this.xscale = -1;
-		
 		this.y += this.gravity;
-		
-		
-		
+	
 		if(this.y >= this.maxHeight){
 			this.x += this.vx;
 			this.y = 240;
 		}
-		//this.x += 1;
-		//console.log(this.x);
+
 		if(this.x == this.maxWidth){
-			//this.xscale = -1;
 			if(this.vx > 0 && this.xscale == 1){
 				this.xscale *= -1;
 			}
-			
 			this.vx *= -1;
 			this.x += this.vx;
-			
-			//this.x = 250;
-			//console.log(this.xscale);
-			//console.log(this.x);
-			//this.x += -1;
 		}
-		
-		
-		/*do{
-			this.x += 1;
-			if(this.y >= this.maxHeight){
-				this.y = 240;
-			}
-		}while(this.x != 200);
-		
-		if(this.x >= 200){
-			this.x += 1;
-			this.y -= 1;
-		}
-		
-		
-		//if(this.y >= 240){this.x = 240}
-		
-		/*if(this.x > this.maxWidth){
-			
-			this.y -= 1;
-		}*/
-		
-		
 	},
-	/*BumpInto: function(bumpObj, side) {
-		if (side != "none") {
-			console.log("WHOA!");
-			
-		}
-	},*/
-	
 	
 });
 
@@ -407,56 +337,17 @@ gm.AddLogic("GreenKoopaWings", {
 	Jump: function() {
 		this.vy = -100/SECOND;
 		this.ay = 0;
-		//this.isOnGround = false;
 	},
 	
 	Update: function(){
 		if(this.onGround){
 			this.Jump();
-			console.log("anything");
 			this.onGround = false;
 		}else{
 			this.ay = 150/SECOND/SECOND;
-			console.log("else");
 		}
 		
 		this.x += 1;
-		//this.ay = 10/SECOND/SECOND;
-		//console.log(this.isOnGround);
-		/*
-		this.vy += this.force;
-		
-		this.vy = this.gravity;
-		this.y += this.vy;
-		
-		
-		if(this.vy > 10){
-			 this.vy = 10;
-		 }*/
-		
-		
-		/*if(this.y >= this.maxHeight){
-			this.x += this.vx;
-			this.y = 240;
-		}*
-		//console.log(this.x);
-		/*if(this.x == this.maxWidth){
-			this.vy += this.force;
-			this.vy *= 1;
-			this.y -= this.vy;
-		}*/ 
-		
-		
-		/*if(this.x == this.maxWidth){
-			//this.xscale = -1;
-			if(this.vx > 0 && this.xscale == 1){
-				this.xscale *= -1;
-			}
-			
-			this.vx *= -1;
-			this.x += this.vx;
-		}*/
-		
 		
 		this.DoPhysics(true);
 		this.UpdateMe();
@@ -468,7 +359,6 @@ gm.AddLogic("GreenKoopaWings", {
 			this.Jump();
 		}
 	}
-
 });
 
 gm.AddLogic("GoombaWings", {
@@ -485,69 +375,41 @@ gm.AddLogic("GoombaWings", {
 	ax: 0,
 	ay: 0,
 	onGround: true,
+	isTouched: true,
+	Jumped: false,
+	Time: 100,
 	Jump: function() {
 		this.vy = -100/SECOND;
 		this.ay = 0;
-		//this.isOnGround = false;
+		this.onGround = false;
+		console.log("jump");
+	},
+	Walk: function(){
+		this.x += 1;
 	},
 	
 	Update: function(){
-		if(this.onGround){
-			this.Jump();
-			console.log("anything");
-			this.onGround = false;
-		}else{
+		if(!this.onGround){
 			this.ay = 150/SECOND/SECOND;
-			console.log("else");
 		}
 		
-		this.x += 1;
-		//this.ay = 10/SECOND/SECOND;
-		//console.log(this.isOnGround);
-		/*
-		this.vy += this.force;
 		
-		this.vy = this.gravity;
-		this.y += this.vy;
-		
-		
-		if(this.vy > 10){
-			 this.vy = 10;
-		 }*/
-		
-		
-		/*if(this.y >= this.maxHeight){
-			this.x += this.vx;
-			this.y = 240;
-		}*
-		//console.log(this.x);
-		/*if(this.x == this.maxWidth){
-			this.vy += this.force;
-			this.vy *= 1;
-			this.y -= this.vy;
-		}*/ 
-		
-		
-		/*if(this.x == this.maxWidth){
-			//this.xscale = -1;
-			if(this.vx > 0 && this.xscale == 1){
-				this.xscale *= -1;
-			}
-			
-			this.vx *= -1;
-			this.x += this.vx;
-		}*/
-		
-		
+		this.Time -= 1;
+		if(this.Time <= 0){
+			this.Jump();
+			this.Time = 100;
+		}
+		this.Walk();
 		this.DoPhysics(true);
 		this.UpdateMe();
 
 	},
 	
 	BumpInto: function(bumpObj, side){
-		if(side == "bottom"){
+		if(side == "bottom" && this.isTouched){			
+			this.isTouched = false;	
+			console.log("sample");
 			
-			this.Jump();
 		}
 	}
 
@@ -563,9 +425,6 @@ gm.AddLogic("Goomba", {
 	
 	Update: function(){
 		
-		
-		
-		//console.log(this.x);
 		this.x += this.vx;
 		
 		if(this.x == this.maxWidth){
@@ -573,12 +432,6 @@ gm.AddLogic("Goomba", {
 			this.x += this.vx;
 		}
 		
-		
-		/*if(this.x < this.maxWidth){
-			this.x = this.x + 1;
-		}else{
-			//this.x = this.x - 1;
-		}*/
 		this.UpdateMe();
 	}
 	
@@ -608,16 +461,42 @@ gm.AddLogic("Piranha",{
 			}
 		}
 		
-
-		
 		this.y += this.vy;
-		
-		
+			
 		this.UpdateMe();
 	}
 	
 });
 
+gm.AddLogic("PiranhaFire",{
+	sprite: "piranhaFiring",
+	sprite_speed: 5/gm.frameRate,
+	firstpos: 0,
+	UP: false,
+	vy: 0,
+	ay: 0,
+	
+	Update: function(){
+		
+		if(this.UP){
+			this.vy = -1;
+			if(this.y <= this.firstpos - this.sprite.sh + 5){
+				this.UP = false;
+				this.xscale *= -1;
+			}
+		}else{
+			this.vy = 1;
+			if(this.y >= this.firstpos){
+				this.UP = true;
+			}
+		}
+	
+		this.y += this.vy;
+	
+		this.UpdateMe();
+	}
+	
+});
 
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
@@ -661,8 +540,10 @@ gm.CreateScene("example1", function() {
 	actorG.isOnGround = false;
 	var actorP = gm.CreateActor(200,200, "Piranha");
 	actorP.firstpos = 200;
-	var actorGo = gm.CreateActor(10, 240, "GoombaWings");
+	var actorGo = gm.CreateActor(60, 240, "GoombaWings");
 	gm.BecomePhysical(actorGo);
+	var actorPF = gm.CreateActor(150, 200, "PiranhaFire");
+	actorPF.firstpos = 200;
 	
 
 
