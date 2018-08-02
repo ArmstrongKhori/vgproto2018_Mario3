@@ -29,6 +29,10 @@ il.AddTask("emptyBlock", "emptyBlock.png");
 
 il.AddTask("reverseLeaf", "leaf.png");
 
+il.AddTask("brick", "brick.png");
+
+gm.AddSprite("brick", "brick", 0, 0, 16, 16, 4);
+
 gm.AddSprite("reverseLeaf", "reverseLeaf", 16, 0, 16, 14, 1);
 
 gm.AddSprite("emptyBlock", "emptyBlock", 0, 0, 16, 16, 1);
@@ -44,11 +48,12 @@ gm.AddSprite("questionBlock2", "questionBlock2", 0, 0, 16, 16, 4);
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 
 gm.AddSprite("mushroom", "Items", 0, 0, 16, 16, 1);
-gm.AddSprite("leaf", "Items", 16, 0, 16, 16, 1);
+gm.AddSprite("leaf", "reverseLeaf", 0, 0, 16, 16, 2);
 gm.AddSprite("1up", "Items", 32, 0, 16, 16, 1);
 
 gm.AddLogic("SolidBlock", {
 	sprite: "questionBlock2",
+
 	solid: true,
 	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
 	bbox: undefined,
@@ -265,16 +270,57 @@ gm.AddLogic("leaf", {
 	Launch: function() {
 		this.ay = 900/SECOND/SECOND;
 		this.vy = -11.5;
-	},
-	Update: function(){
+
 		this.sprite = "leaf";
 		this.sprite_index = 0;
+		this.sprite_speed = 3/SECOND;
+	},
+	Update: function(){
+		
+		var direction = (this.x <= this.myBlock.x + 16);
+
+		/*var RIGHT = 1;
+		var LEFT = 2;*/
 
 		if (this.vy > 10/SECOND) {
 			this.vy = 10/SECOND;
 		}
 
+		/*if (this.y > 16) {
+			this.y ++;
+			this.x ++;*/
+
+		/*if (this.y > 16){
+
+			switch (direction){
+
+				case RIGHT:
+					this.vx += +1;
+					this.vy += +1;
+					break;
+
+				case LEFT:
+					this.vx += -1;
+					this.vy += +1;	
+					break;*/
+			//}
+		//}
+
+		if (this.isActive == true){
+
+			if (direction) {
+				this.x += 1;
+				//this.out = true;
+
+			}else{
+			 	(this.x >= 16);
+				this.x += -16;
+			}
+		}
+
 		//need to add if statements here to make the animation of the leaf work
+
+
 
 
 		this.DoPhysics();
@@ -461,6 +507,7 @@ gm.AddLogic("1up", {
 
 });
 
+
 gm.AddLogic("pBlock",{
 	isActive: false,
 	out: false,
@@ -471,10 +518,21 @@ gm.AddLogic("pBlock",{
 	sprite_speed: 8/SECOND,
 
 
+
 	TriggerSwitch: function() {
+		
 		this.sprite = "pBlockDown";
 		this.solid = false;
+
+		
 	},
+
+	ChangeBlock: function(){
+		if (this.sprite == "pBlockDown"){
+			brickOne.sprite = "coin2";
+		}
+	},
+
 	Update: function(){
 		
 
@@ -584,6 +642,17 @@ gm.AddLogic("questionBlock2", {
 
 });
 
+gm.AddLogic("brick", {
+	isActive: true,
+	startingY: this.y,
+	sprite_index: 0,
+	sprite_speed: 8/gm.frameRate,
+	sprite: "brick",
+	type: undefined,
+	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
+
+});
+
 // gm.AddLogic()
 
 
@@ -622,9 +691,9 @@ gm.CreateScene("example1", function() {
 		if (ct.KeyIsDown(ct.KEY_X)){ this.sprite = "pBlockDown";}
 	}
 
-	var reverseLeaf = gm.CreateActor(50,150);
+	/*var reverseLeaf = gm.CreateActor(50,150);
 	reverseLeaf.sprite = "reverseLeaf";
-	reverseLeaf.sprite_speed = 8/gm.frameRate;
+	reverseLeaf.sprite_speed = 8/gm.frameRate;*/
 
 	/*var leaf = gm.CreateActor(50,150);
 	leaf.sprite = "leaf";
@@ -634,7 +703,11 @@ gm.CreateScene("example1", function() {
 	oneUp.sprite = "1up";
 	oneUp.sprite_speed = 8/gm.frameRate;
 
-	
+	var brickOne = gm.CreateActor(175, 150, "brick");
+	brickOne.sprite_speed = 5/SECOND;
+	gm.BecomeSolid(brickOne);
+	brickOne.name = "brick";
+	brickOne.type = "brick";
 
 	//mushroom.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
 	//mushroom.sprite_speed = 12/gm.frameRate;
@@ -667,6 +740,9 @@ gm.CreateScene("example1", function() {
 	gm.BecomeSolid(qBlockFive);
 	qBlockFive.name = "question block";
 	qBlockFive.type = "pBlock";
+
+	
+	
 
 	 // *** Every "frame", this is how many frames we move forward in the sprite's animation. This code says "12 frames per second".
 
