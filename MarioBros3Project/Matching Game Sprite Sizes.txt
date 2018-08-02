@@ -1,9 +1,0 @@
-MarioMiniGameSprites.png
-
-48px, 64px
-
-
-All Cards:
-
-22px, 32px
-

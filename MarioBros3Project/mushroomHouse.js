@@ -126,7 +126,7 @@ gm.CreateScene("mushroomHouse", function() {
 	var actor = gm.CreateActor(0, 0, "SolidBlock");
 	gm.BecomeSolid(actor);
 
-	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 32, 0, 0);
+	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 24, 0, 0);
 	actor.xscale = room.width/64;
 	actor.visible = false;
 
@@ -136,7 +136,7 @@ gm.CreateScene("mushroomHouse", function() {
 	var actor = gm.CreateActor(176, 0, "SolidBlock");
 	gm.BecomeSolid(actor);
 
-	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 32, 0, 0);
+	actor.bbox = gm.MakeBoundingBox(0, 0, 80, 24, 0, 0);
 	actor.xscale = room.width/64;
 	actor.visible = false;
 
