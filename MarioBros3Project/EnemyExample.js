@@ -16,6 +16,7 @@ il.AddTask("koopatroopaWings", "KoopawithWings(good2)right.png");
 il.AddTask("goombaWings", "good-goomba-wings.png");
 il.AddTask("piranhaPlain", "piranha2.png");
 il.AddTask("piranhaFire", "fireball piranha red-right.png");
+il.AddTask("fireball", "fireball2.png")
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
@@ -37,6 +38,8 @@ gm.AddSprite("plainPiranha", "piranhaPlain", 16*0, 0, 16, 32, 2, 16/2, 32);
 
 //firepiranha
 gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32);
+//fireball
+gm.AddSprite("fireBall", "fireball", 14*0, 0, 14, 16, 4, 14/2, 16);
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
@@ -492,8 +495,27 @@ gm.AddLogic("PiranhaFire",{
 		}
 	
 		this.y += this.vy;
-	
+		
+		this.FiringBall();
 		this.UpdateMe();
+	},
+	
+	FiringBall: function(){
+		var actorFB = gm.CreateActor(140, this.y, "FireBallAnim");
+		actorFB.vy = 1;
+		actorFB.vx = 1;
+		
+	}
+	
+});
+
+gm.AddLogic("FireBallAnim", {
+	sprite: "fireBall",
+	sprite_speed: 5/gm.frameRate,
+	
+	Update: function(){
+		this.x += this.vx;
+		this.y += this.vy;
 	}
 	
 });
