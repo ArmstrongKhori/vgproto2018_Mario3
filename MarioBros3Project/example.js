@@ -45,6 +45,7 @@ gm.AddSprite("smallMarioJump", "mario", 32*5, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("smallMarioFall", "mario", 32*5, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("smallMarioDive", "mario", 32*6, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("smallMarioPipe", "mario", 32*7, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioDuck", "mario", 32*0, 0, 32, 32, 1, offsetx, offsety);
 
 gm.AddSprite("bigMarioIdle", "mario", 32*8, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("bigMarioWalk", "mario", 32*8, 0, 32, 32, 2, offsetx, offsety);
@@ -54,6 +55,7 @@ gm.AddSprite("bigMarioJump", "mario", 32*14, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("bigMarioFall", "mario", 32*15, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("bigMarioDive", "mario", 32*16, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("bigMarioPipe", "mario", 32*17, 0, 32, 32, 1, offsetx, offsety);
+<<<<<<< HEAD
 
 gm.AddSprite("tailMarioIdle", "mario", 32*18, 0, 32, 32, 1, offsetx, offsety);
 gm.AddSprite("tailMarioWalk", "mario", 32*18, 0, 32, 32, 2, offsetx, offsety);
@@ -65,6 +67,22 @@ gm.AddSprite("tailMarioDive", "mario", 32*29, 0, 32, 32, 3, offsetx, offsety);
 gm.AddSprite("tailMarioPipe", "mario", 32*32, 0, 32, 32, 3, offsetx, offsety);
 
 gm.AddSprite("marioDead", "mario", 32*0, 0, 32, 32, 1, offsetx, offsety);
+>>>>>>> master
+=======
+gm.AddSprite("bigMarioDuck", "mario", 32*18, 0, 32, 32, 1, offsetx, offsety);
+
+offsetx = 32/1.5;
+gm.AddSprite("tailMarioIdle", "mario", 32*19, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioWalk", "mario", 32*19, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("tailMarioRun", "mario", 32*21, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioSkid", "mario", 32*24, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioJump", "mario", 32*25, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioFall", "mario", 32*26, 0, 32, 32, 4, offsetx, offsety);
+gm.AddSprite("tailMarioDive", "mario", 32*30, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioPipe", "mario", 32*33, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioDuck", "mario", 32*34, 0, 32, 32, 1, offsetx, offsety);
+
+gm.AddSprite("marioDead", "mario", 32*35, 0, 32, 32, 1, offsetx, offsety);
 >>>>>>> master
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
 
@@ -177,6 +195,20 @@ gm.AddLogic("SolidBlock", {
 	bbox: undefined,
 });
 
+gm.AddLogic("PhaseBlock", {
+	sprite: "solidBoxFull",
+	solid: true,
+	ignore_solid: {
+		left: true,
+		top: true,
+		right: true
+	},
+	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
+	xscale: 1/4,
+	yscale: 1/4,
+	bbox: undefined,
+});
+
 gm.AddLogic("Camera", {
 	target: undefined,
 	Update: function() {
@@ -190,13 +222,13 @@ gm.AddLogic("Camera", {
 		if (this.target) {
 			// *** ... Follow the target, but from half a screen away!
 			this.x = this.target.x - 256/2;
-			this.y = 0;
+			this.y = this.target.y - 256/2;
 		}
 		//
 		// *** Clamp the X and Y so that they don't go past the room's boundaries.
 		var room = gm.GetRoomData();
 		this.x = Math.max(0, Math.min(this.x, room.width-256));
-		this.y = Math.max(0, Math.min(this.y, room.height-256));
+		this.y = Math.min(Math.max(0, this.y), room.height-256 +60);
 		//
 		// *** Finally, tell the game manager that THIS object is the camera!
 		gm.AssignCamera(this);
@@ -206,8 +238,8 @@ gm.AddLogic("Camera", {
 gm.AddLogic("Mario", {
 	jumpHold: 0,
 	isOnGround: false,
-	box_small: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16),
-	box_big: gm.MakeBoundingBox(0, 0, 16, 32, 16/2, 32),
+	box_small: gm.MakeBoundingBox(4, 0, 16-4*2, 16, 16/2, 16),
+	box_big: gm.MakeBoundingBox(4, 0, 16-4*2, 32, 16/2, 32),
 	bbox: undefined,
 
 	STATE_SMALL: 0,
@@ -224,7 +256,8 @@ gm.AddLogic("Mario", {
 	ANIM_FALL: 5,
 	ANIM_DIVE: 6,
 	ANIM_PIPE: 7,
-	ANIM_DEAD: 8,
+	ANIM_DUCK: 8,
+	ANIM_DEAD: 9,
 	anim: 0,
 
 	spriteGroup: undefined,
@@ -246,6 +279,7 @@ gm.AddLogic("Mario", {
 				[this.ANIM_FALL]:	"smallMarioFall",
 				[this.ANIM_DIVE]:	"smallMarioDive",
 				[this.ANIM_PIPE]:	"smallMarioPipe",
+				[this.ANIM_DUCK]:	"smallMarioDuck",
 				[this.ANIM_DEAD]:	"marioDead",
 			},
 			[this.STATE_BIG]: {
@@ -257,6 +291,7 @@ gm.AddLogic("Mario", {
 				[this.ANIM_FALL]:	"bigMarioFall",
 				[this.ANIM_DIVE]:	"bigMarioDive",
 				[this.ANIM_PIPE]:	"bigMarioPipe",
+				[this.ANIM_DUCK]:	"bigMarioDuck",
 				[this.ANIM_DEAD]:	"marioDead",
 			},
 			[this.STATE_TAIL]: {
@@ -268,6 +303,7 @@ gm.AddLogic("Mario", {
 				[this.ANIM_FALL]:	"tailMarioFall",
 				[this.ANIM_DIVE]:	"tailMarioDive",
 				[this.ANIM_PIPE]:	"tailMarioPipe",
+				[this.ANIM_DUCK]:	"tailMarioDuck",
 				[this.ANIM_DEAD]:	"marioDead",
 			},
 			[this.STATE_DEAD]: {
@@ -435,7 +471,10 @@ gm.AddLogic("Mario", {
 
 		// ============================================================================================================
 		// *** This part handles the animations (that is, how Mario should currently look!)
-		if (this.isOnGround) {
+		if (this.state == this.STATE_DEAD) {
+			this.anim = this.ANIM_DEAD;
+		}
+		else if (this.isOnGround) {
 			if (Math.abs(this.vx) > 1/SECOND)
 			{
 				if (motionHori == -Math.sign(this.vx)) {
@@ -592,7 +631,7 @@ gm.CreateScene("example1", function() {
 	var actor = gm.CreateActor(0, 0, "Camera");
 
 
-	var actor = gm.CreateActor(200, 200, "SolidBlock");
+	var actor = gm.CreateActor(200, 200, "PhaseBlock");
 	gm.BecomeSolid(actor);
 	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
 
