@@ -9,14 +9,11 @@ ct ~ "Controller" object. Use it for reading keyboard inputs.
 
 
 // *** I am adding a new "Image" file that we can use later. I have id'd it "mario"... Remember that.
+
 il.AddTask("mario", "Mario.png");
-il.AddTask("goomba", "goomba.png");
-il.AddTask("koopatroopa", "koopa-right.png");
-il.AddTask("koopatroopaWings", "KoopawithWings(good2)right.png");
-il.AddTask("goombaWings", "good-goomba-wings.png");
-il.AddTask("piranhaPlain", "piranha2.png");
-il.AddTask("piranhaFire", "fireball piranha red-right.png");
-il.AddTask("fireball", "fireball2.png")
+il.AddTask("goomba", "goomba with wings2.png");
+il.AddTask("koopatroopa", "KoopawithWings(good2).png")
+il.AddTask("piranhaFire", "fireball piranha red-left.png")
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
 gm.AddSprite("smallMarioIdle", "mario", 64*0, 0, 64, 64, 1, 64/2, 64);
@@ -24,23 +21,67 @@ gm.AddSprite("smallMarioWalk", "mario", 64*1, 0, 64, 64, 2, 64/2, 64);
 gm.AddSprite("smallMarioRun", "mario", 64*3, 0, 64, 64, 2, 64/2, 64);
 
 //goomba
-gm.AddSprite("darkGoombawalking", "goomba", 16*0, 0, 16, 16, 2, 16/2, 16);
-//gm.AddSprite("darkGoombaDead", "goomba", 19*2, 0, 19, 19, 1, 19/2, 19);
+gm.AddSprite("darkGoombawalking", "goomba", 30*0, 0, 30, 24, 2, 30/2, 24);
+gm.AddSprite("darkGoombaDead", "goomba", 19*2, 0, 19, 19, 1, 19/2, 19);
 //koopatroopa
-gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 2, 20/2, 27);
+gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 3, 20/2, 27);
 //gm.AddSprite("koopatroopaShell", "koopatroopa", 24*2, 0, 24, 24, 4, 19/2, 23);
-//koopatroopaWings
-gm.AddSprite("koopatroopaWalkingWings", "koopatroopaWings", 20*0, 0, 20, 27, 3, 20/2, 27);
-//goombaWings
-gm.AddSprite("goombaWalkingWings", "goombaWings", 24*0, 0, 24, 24, 4, 24/2, 24);
-//piranha
-gm.AddSprite("plainPiranha", "piranhaPlain", 16*0, 0, 16, 32, 2, 16/2, 32);
 
-//firepiranha
-gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32);
-//fireball
-gm.AddSprite("fireBall", "fireball", 14*0, 0, 14, 16, 4, 14/2, 16);
+gm.AddSprite("piranhaFiring","piranhaFire", 16*0, 0, 16, 32, 4, 16/2, 32)
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
+
+il.AddTask("mario", "MarioComposite.png");
+//
+// *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
+var offsetx, offsety;
+offsetx = 32/2;
+offsety = 32;
+gm.AddSprite("smallMarioIdle", "mario", 32*0, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioWalk", "mario", 32*0, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("smallMarioRun", "mario", 32*2, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("smallMarioSkid", "mario", 32*4, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioJump", "mario", 32*5, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioFall", "mario", 32*5, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioDive", "mario", 32*6, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioPipe", "mario", 32*7, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("smallMarioDuck", "mario", 32*0, 0, 32, 32, 1, offsetx, offsety);
+
+gm.AddSprite("bigMarioIdle", "mario", 32*8, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("bigMarioWalk", "mario", 32*8, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("bigMarioRun", "mario", 32*10, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("bigMarioSkid", "mario", 32*13, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("bigMarioJump", "mario", 32*14, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("bigMarioFall", "mario", 32*15, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("bigMarioDive", "mario", 32*16, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("bigMarioPipe", "mario", 32*17, 0, 32, 32, 1, offsetx, offsety);
+
+
+gm.AddSprite("tailMarioIdle", "mario", 32*18, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioWalk", "mario", 32*18, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("tailMarioRun", "mario", 32*20, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioSkid", "mario", 32*23, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioJump", "mario", 32*24, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioFall", "mario", 32*25, 0, 32, 32, 4, offsetx, offsety);
+gm.AddSprite("tailMarioDive", "mario", 32*29, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioPipe", "mario", 32*32, 0, 32, 32, 3, offsetx, offsety);
+
+gm.AddSprite("marioDead", "mario", 32*0, 0, 32, 32, 1, offsetx, offsety);
+
+
+gm.AddSprite("bigMarioDuck", "mario", 32*18, 0, 32, 32, 1, offsetx, offsety);
+
+offsetx = 32/1.5;
+gm.AddSprite("tailMarioIdle", "mario", 32*19, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioWalk", "mario", 32*19, 0, 32, 32, 2, offsetx, offsety);
+gm.AddSprite("tailMarioRun", "mario", 32*21, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioSkid", "mario", 32*24, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioJump", "mario", 32*25, 0, 32, 32, 1, offsetx, offsety);
+gm.AddSprite("tailMarioFall", "mario", 32*26, 0, 32, 32, 4, offsetx, offsety);
+gm.AddSprite("tailMarioDive", "mario", 32*30, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioPipe", "mario", 32*33, 0, 32, 32, 3, offsetx, offsety);
+gm.AddSprite("tailMarioDuck", "mario", 32*34, 0, 32, 32, 1, offsetx, offsety);
+
+gm.AddSprite("marioDead", "mario", 32*35, 0, 32, 32, 1, offsetx, offsety);
 
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
 
@@ -57,25 +98,107 @@ gm.AddSprite("level1background", "backdrop", 0, 432-256, 256, 256, 1);
 gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
 
 
+
+gm.AddLogic("Mario", {
+	vx: 0,
+	vy: 0,
+	ax: 0,
+	ay: 0,
+	isOnGround: false,
+	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16, false),
+	Update: function() {
+		var motionHori = ct.KeyIsDown(ct.KEY_LEFT)*-1 + 1*ct.KeyIsDown(ct.KEY_RIGHT);
+		var motionVert = ct.KeyIsDown(ct.KEY_UP)*-1 + 1*ct.KeyIsDown(ct.KEY_DOWN);
+		//
+		//
+		if (motionHori == 0 && motionVert == 0) {
+			// *** We're using Mario's "idle" sprite-- You know, the one we created earlier!
+			// *** When we're NOT moving, we change to an idle sprite and stop animating.
+			this.sprite = "smallMarioIdle";
+			this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
+			this.sprite_speed = 0;
+		}
+		else {
+			// *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
+			// *** When we're moving, we change to a walking sprite and start animating.
+			this.sprite = "smallMarioWalk"; 
+			// *** DON'T set index! Let it animate~~
+			this.sprite_speed = 12/gm.frameRate;
+		}
+		//
+		//
+		if (!this.isOnGround) {
+			this.ay = 800/gm.frameRate/gm.frameRate;
+		}
+		//
+		if (ct.KeyIsDown(ct.KEY_X)) {
+			this.x += 6*motionHori;
+		}
+		else {
+			this.x += 4*motionHori;
+		}
+
+		if (ct.KeyWasPressed(ct.KEY_Z)) {
+			if (this.isOnGround) {
+				this.vy = -200/gm.frameRate;
+				this.isOnGround = false;
+			}
+		}
+
+		if (motionHori != 0) {
+			this.xscale = motionHori*1;
+			this.yscale = 1;
+		}
+
+
+
+
+		this.vx += this.ax;
+		this.vy += this.ay;
+		//
+		this.x += this.vx;
+		this.y += this.vy;
+
+gm.AddSprite("level1background", "backdrop", 0, 432-256, 512, 256, 1);
+gm.AddSprite("level2background", "backdrop", 300, 432-256, 256, 256, 1);
+
+
+
 il.AddTask("box", "box.png");
 //
 gm.AddSprite("solidBoxFull", "box", 0, 0, 64, 64, 1);
 
-
-		/*if (this.Bottom() > 256) {
+		if (this.Bottom() > 256) {
 			this.y -= (this.Bottom() - 256);
 			this.vy = 0;
-			this.isOnGround = true;*/
+			this.isOnGround = true;
 
-			var SECOND = gm.frameRate;
+var SECOND = gm.frameRate;
 
-			/*this.ay = 0;
-		}*/
+			this.ay = 0;
+		}
+		
+var SECOND = gm.frameRate;
+
 
 
 gm.AddLogic("SolidBlock", {
 	sprite: "solidBoxFull",
 	solid: true,
+	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
+	xscale: 1/4,
+	yscale: 1/4,
+	bbox: undefined,
+});
+
+gm.AddLogic("PhaseBlock", {
+	sprite: "solidBoxFull",
+	solid: true,
+	ignore_solid: {
+		left: true,
+		top: true,
+		right: true
+	},
 	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
 	xscale: 1/4,
 	yscale: 1/4,
@@ -95,13 +218,13 @@ gm.AddLogic("Camera", {
 		if (this.target) {
 			// *** ... Follow the target, but from half a screen away!
 			this.x = this.target.x - 256/2;
-			this.y = 0;
+			this.y = this.target.y - 256/2;
 		}
 		//
 		// *** Clamp the X and Y so that they don't go past the room's boundaries.
 		var room = gm.GetRoomData();
 		this.x = Math.max(0, Math.min(this.x, room.width-256));
-		this.y = Math.max(0, Math.min(this.y, room.height-256));
+		this.y = Math.min(Math.max(0, this.y), room.height-256 +60);
 		//
 		// *** Finally, tell the game manager that THIS object is the camera!
 		gm.AssignCamera(this);
@@ -109,13 +232,127 @@ gm.AddLogic("Camera", {
 });
 
 gm.AddLogic("Mario", {
-	vx: 0,
-	vy: 0,
-	ax: 0,
-	ay: 0,
 	jumpHold: 0,
 	isOnGround: false,
-	bbox: gm.MakeBoundingBox(0, 0, 16, 16, 16/2, 16),
+	box_small: gm.MakeBoundingBox(4, 0, 16-4*2, 16, 16/2, 16),
+	box_big: gm.MakeBoundingBox(4, 0, 16-4*2, 32, 16/2, 32),
+	bbox: undefined,
+
+	STATE_SMALL: 0,
+	STATE_BIG: 1,
+	STATE_TAIL: 2,
+	STATE_DEAD: 3,
+	state: 0,
+
+	ANIM_IDLE: 0,
+	ANIM_WALK: 1,
+	ANIM_RUN: 2,
+	ANIM_SKID: 3,
+	ANIM_JUMP: 4,
+	ANIM_FALL: 5,
+	ANIM_DIVE: 6,
+	ANIM_PIPE: 7,
+	ANIM_DUCK: 8,
+	ANIM_DEAD: 9,
+	anim: 0,
+
+	spriteGroup: undefined,
+
+
+	invulnTime: 0,
+	starTime: 0,
+	grabObj: undefined,
+
+
+	OnCreate: function() {
+		this.spriteGroup = {
+			[this.STATE_SMALL]: {
+				[this.ANIM_IDLE]:	"smallMarioIdle",
+				[this.ANIM_WALK]:	"smallMarioWalk",
+				[this.ANIM_RUN]:	"smallMarioRun",
+				[this.ANIM_SKID]:	"smallMarioSkid",
+				[this.ANIM_JUMP]:	"smallMarioJump",
+				[this.ANIM_FALL]:	"smallMarioFall",
+				[this.ANIM_DIVE]:	"smallMarioDive",
+				[this.ANIM_PIPE]:	"smallMarioPipe",
+				[this.ANIM_DUCK]:	"smallMarioDuck",
+				[this.ANIM_DEAD]:	"marioDead",
+			},
+			[this.STATE_BIG]: {
+				[this.ANIM_IDLE]:	"bigMarioIdle",
+				[this.ANIM_WALK]:	"bigMarioWalk",
+				[this.ANIM_RUN]:	"bigMarioRun",
+				[this.ANIM_SKID]:	"bigMarioSkid",
+				[this.ANIM_JUMP]:	"bigMarioJump",
+				[this.ANIM_FALL]:	"bigMarioFall",
+				[this.ANIM_DIVE]:	"bigMarioDive",
+				[this.ANIM_PIPE]:	"bigMarioPipe",
+				[this.ANIM_DUCK]:	"bigMarioDuck",
+				[this.ANIM_DEAD]:	"marioDead",
+			},
+			[this.STATE_TAIL]: {
+				[this.ANIM_IDLE]:	"tailMarioIdle",
+				[this.ANIM_WALK]:	"tailMarioWalk",
+				[this.ANIM_RUN]:	"tailMarioRun",
+				[this.ANIM_SKID]:	"tailMarioSkid",
+				[this.ANIM_JUMP]:	"tailMarioJump",
+				[this.ANIM_FALL]:	"tailMarioFall",
+				[this.ANIM_DIVE]:	"tailMarioDive",
+				[this.ANIM_PIPE]:	"tailMarioPipe",
+				[this.ANIM_DUCK]:	"tailMarioDuck",
+				[this.ANIM_DEAD]:	"marioDead",
+			},
+			[this.STATE_DEAD]: {
+				[this.ANIM_DEAD]:	"marioDead",
+			},
+		};
+
+		this.bbox = this.box_small;
+	},
+	ChangeState: function(state) {
+		this.state = state;
+		//
+		if (this.state == this.STATE_SMALL) {
+			this.bbox = this.box_small;
+		}
+		else {
+			this.bbox = this.box_big;
+		}
+	},
+	PowerUp_Mushroom: function() {
+		// *** Mushrooms only transform Mario when he's small!
+		if (this.state == this.STATE_SMALL) {
+			this.ChangeState(this.STATE_BIG);
+		}
+	},
+	PowerUp_Leaf: function() {
+		// *** Super Leaf overpowers any form EXCEPT for the Tanooki Suit (which doesn't exist at the moment)
+		this.ChangeState(this.STATE_TAIL);
+	},
+	PowerUp_Star: function(state) {
+		this.starTime = SECOND*10;
+	},
+	GetHit: function() {
+		if (this.invulnTime <= 0) {
+			if (this.state == this.STATE_TAIL) {
+				this.ChangeState(this.STATE_BIG);
+
+				this.invulnTime = SECOND;
+			}
+			else if (this.state == this.STATE_BIG) {
+				this.ChangeState(this.STATE_SMALL);
+
+				this.invulnTime = SECOND*2;
+			}
+			else {
+				this.Die();
+			}
+		}
+	},
+	Die: function() {
+		this.invulnTime = 0;
+		this.ChangeState(this.STATE_DEAD);
+	},
 	Jump: function() {
 		this.vy = -150/SECOND;
 		this.ay = 0;
@@ -148,7 +385,6 @@ gm.AddLogic("Mario", {
 		}
 		else if (motionHori == -Math.sign(this.vx)) { // *** If we are fighting our momentum...
 			this.ax = -Math.sign(this.vx) *Math.min(12/SECOND, Math.abs(this.vx)); // *** ... Slow down A LOT.
-			// ??? <-- Skid!
 		}
 		else {
 			// *** Otherwise: Accelerate us!
@@ -195,12 +431,14 @@ gm.AddLogic("Mario", {
 				this.ay = 1500/SECOND/SECOND;
 			}
 		}
-
-
 		//
 		//
-		// *** Automatically do the physics ("gm.BecomePhysical" automatically )
-		this.DoPhysics(true);
+		// ============================================================================================================
+		// *** Physics time!
+
+
+		// *** Automatically do the physics (a function created by "gm.BecomePhysical" that automatically performs velocity, acceleration, and collision-checking)
+		this.DoPhysics(true); // *** "true" means we will be "pushed out" by solid actors
 		//
 		//
 		// *** Bound against the screen edges!
@@ -227,31 +465,57 @@ gm.AddLogic("Mario", {
 		}
 
 
+		// ============================================================================================================
+		// *** This part handles the animations (that is, how Mario should currently look!)
+		if (this.state == this.STATE_DEAD) {
+			this.anim = this.ANIM_DEAD;
+		}
+		else if (this.isOnGround) {
+			if (Math.abs(this.vx) > 1/SECOND)
+			{
+				if (motionHori == -Math.sign(this.vx)) {
+					// *** Skid if we are fighting our momentum!
+					this.anim = this.ANIM_SKID;
+				}
+				else if (Math.abs(this.vx) > 120/SECOND && doingDash) {
+					// *** When we're moving really fast, we change to a running sprite.
+					this.anim = this.ANIM_RUN;
+				}
+				else {
+					// *** When we're moving, we change to a walking sprite.
+					this.anim = this.ANIM_WALK;
+				}
 
 
-
-
-		if (this.isOnGround && Math.abs(this.vx) > 1/SECOND)
-		{
-			if (Math.abs(this.vx) > 120/SECOND && doingDash) {
-				// *** When we're moving really fast, we change to a running sprite.
-				this.sprite = "smallMarioRun"; 
+				// *** DON'T set index! Let it animate~~
+				this.sprite_speed = 12/SECOND;
 			}
 			else {
-				// *** When we're moving, we change to a walking sprite.
-				this.sprite = "smallMarioWalk"; 
+				// *** When we're NOT moving, we change to an idle sprite and stop animating.
+				this.anim = this.ANIM_IDLE;
+				this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
+				this.sprite_speed = 0;
 			}
-
-
-			// *** DON'T set index! Let it animate~~
-			this.sprite_speed = 12/SECOND;
 		}
-		else {
-			// *** When we're NOT moving, we change to an idle sprite and stop animating.
-			this.sprite = "smallMarioIdle";
-			this.sprite_index = 0; // *** Set index to 0 so that new animations will start from the beginning.
-			this.sprite_speed = 0;
+		else
+		{
+			if (Math.abs(this.vx) > 120/SECOND && doingDash) {
+				this.anim = this.ANIM_DIVE;
+			}
+			else {
+				if (this.vy < 0) {
+					this.anim = this.ANIM_JUMP;
+				}
+				else {
+					this.anim = this.ANIM_FALL;
+				}
+			}
 		}
+		//
+		//
+		// *** This is a nested array that contains the sprite that matches Mario's state/animation. Complicated, but also VERY simplified!
+		this.sprite = this.spriteGroup[this.state][this.anim];
+
 
 		// *** Remove it!
 		if (ct.KeyIsDown(ct.KEY_SPACE)) { this.Destroy(); }
@@ -261,10 +525,33 @@ gm.AddLogic("Mario", {
 		// *** Go to another scene
 		if (ct.KeyIsDown(ct.KEY_SHIFT)) { gm.StartScene("example2"); }
 
+		if (this.invulnTime > 0) { this.visible = (Math.round(this.invulnTime) % 2 == 0); }
+		else { this.visible = true; } 
 
 
+
+		// ============================================================================================================
+		// *** Various timers.
+		if (this.invulnTime > 0) { this.invulnTime -= 1; }
+
+		if (this.starTime > 0) { this.starTime -= 1; }
+
+
+
+
+		// ============================================================================================================
 		// *** Mandatory call to the "me" function to make sure everything still works smoothly!
 		this.UpdateMe();
+
+
+		if (ct.KeyWasPressed(ct.KEY_ENTER)) {
+			if (this.state == this.STATE_SMALL) { this.PowerUp_Mushroom(); }
+			else { this.PowerUp_Leaf(); }
+		}
+
+		if (ct.KeyWasPressed(ct.KEY_SHIFT)) {
+			this.GetHit();
+		}
 	},
 	BumpInto: function(bumpObj, side) {
 		if (side === "bottom" && this.vy >= 0) {
@@ -274,19 +561,42 @@ gm.AddLogic("Mario", {
 			this.jumpHold = 0;
 
 
-			// this.vy = -this.gravity;
+			if (bumpObj.Stomped) {
+				bumpObj.Stomped(this, side);
+			}
+
+			if (bumpObj.Bounce) {
+				bumpObj.Bounce(this, side);
+			}
 		} else if (side === "top" && this.vy <= 0) {
 			this.vy = 0;
 			this.jumpHold = 0;
+
+			if (bumpObj.Struck) {
+				bumpObj.Struck(this, side);
+			}
+
+			if (bumpObj.Bounce) {
+				bumpObj.Bounce(this, side);
+			}
 		} else if (side === "right" && this.vx >= 0) {
 			this.vx = 0;
 			this.ax = 0;
+
+			if (bumpObj.Bounce) {
+				bumpObj.Bounce(this, side);
+			}
 		} else if (side === "left" && this.vx <= 0) {
 			this.vx = 0;
 			this.ax = 0;
+
+			if (bumpObj.Bounce) {
+				bumpObj.Bounce(this, side);
+			}
 		}
 	}
 });
+
 
 
 gm.AddLogic("GreenKoopa", {
@@ -523,8 +833,16 @@ gm.AddLogic("FireBallAnim", {
 gm.CreateScene("example1", function() {
 	// *** We create an "actor"-- These are objects that can "interact" with the engine.
 	var actor = gm.CreateActor(100, 100, "Mario");
-	
-});
+	var actor = gm.CreateActor(200,200, "Enemies");
+	var actor = gm.CreateActor(150,150,{
+		sprite: "koopatroopaWalking",
+		sprite_speed: 5/gm.frameRate,
+	});
+	var actor = gm.CreateActor(50,50,{
+		sprite: "piranhaFiring",
+		sprite_speed: 5/gm.frameRate,
+	});
+
 
 gm.CreateScene("example1", function() {
 	
@@ -538,10 +856,11 @@ gm.CreateScene("example1", function() {
 	var actor = gm.CreateActor(100, 100, "Mario");
 	gm.BecomePhysical(actor);
 	
+
 	var actor = gm.CreateActor(0, 0, "Camera");
 
 
-	var actor = gm.CreateActor(200, 200, "SolidBlock");
+	var actor = gm.CreateActor(200, 200, "PhaseBlock");
 	gm.BecomeSolid(actor);
 	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
 
@@ -549,8 +868,6 @@ gm.CreateScene("example1", function() {
 	var room = gm.GetRoomData();
 	var actor = gm.CreateActor(0, room.height-16, "SolidBlock");
 	gm.BecomeSolid(actor);
-
-
 	actor.bbox = gm.MakeBoundingBox(0, 0, room.width, 16, 0, 0);
 	actor.xscale = room.width/64;
 	actor.visible = false;
@@ -566,7 +883,6 @@ gm.CreateScene("example1", function() {
 	gm.BecomePhysical(actorGo);
 	var actorPF = gm.CreateActor(150, 200, "PiranhaFire");
 	actorPF.firstpos = 200;
-	
 
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
