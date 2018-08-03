@@ -610,7 +610,6 @@ var Actor = (function(x, y) {
 		}
 		// *** If overlapping the bottom...
 		if (passingB) {
-			console.log(Math.ceil(distL), Math.ceil(distR));
 			// *** ... And you are also overlapping left/right...
 			if (distL > 0 && distR > 0) {
 				collstate = "bottom"; // *** "We are colliding the bottom"
