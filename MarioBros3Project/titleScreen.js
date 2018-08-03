@@ -67,13 +67,6 @@ gm.CreateScene("titleScreen", function(){
 
 
 	var playercursor = gm.CreateActor(84, 144, "selectCursor");
-
-
-
-	
-
-
-
 });
 
 gm.AddLogic("selectCursor", {
@@ -107,6 +100,16 @@ gm.AddLogic("selectCursor", {
 
 		// Setting the distance of cursor movement
 		this.y = 144+this.cy*16;	
+
+
+		if(ct.KeyWasPressed(ct.KEY_X)) {
+			if(this.cy == 0) {
+				gm.StartScene("example1");
+			}
+			else if(this.cy == 1) {
+				gm.StartScene("shop");
+			};
+		};
 
 	}
 });

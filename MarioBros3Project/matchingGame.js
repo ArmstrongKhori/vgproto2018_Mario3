@@ -284,7 +284,6 @@ gm.CreateScene("shop", function() {
 
 // Starts the minigame section
 gm.StartScene("shop");
-music.play();
 // Will add item and amount of points to HUD depending on the 
 // item selected
 /* function giveItem() {
