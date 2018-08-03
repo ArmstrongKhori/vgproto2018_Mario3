@@ -83,7 +83,7 @@ gm.AddSprite("tailMarioPipe", "mario", 32*33, 0, 32, 32, 3, offsetx, offsety);
 gm.AddSprite("tailMarioDuck", "mario", 32*34, 0, 32, 32, 1, offsetx, offsety);
 
 gm.AddSprite("marioDead", "mario", 32*35, 0, 32, 32, 1, offsetx, offsety);
->>>>>>> master
+
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames, x offset, y offset
 
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
@@ -169,8 +169,6 @@ il.AddTask("box", "box.png");
 //
 gm.AddSprite("solidBoxFull", "box", 0, 0, 64, 64, 1);
 
-
-<<<<<<< HEAD
 		if (this.Bottom() > 256) {
 			this.y -= (this.Bottom() - 256);
 			this.vy = 0;
@@ -180,11 +178,10 @@ var SECOND = gm.frameRate;
 
 			this.ay = 0;
 		}
-
-=======
+		
 var SECOND = gm.frameRate;
 
->>>>>>> master
+
 
 gm.AddLogic("SolidBlock", {
 	sprite: "solidBoxFull",
@@ -520,7 +517,7 @@ gm.AddLogic("Mario", {
 		// *** This is a nested array that contains the sprite that matches Mario's state/animation. Complicated, but also VERY simplified!
 		this.sprite = this.spriteGroup[this.state][this.anim];
 
-<<<<<<< HEAD
+
 		// *** Remove it!
 		if (ct.KeyIsDown(ct.KEY_SPACE)) { this.Destroy(); }
 
@@ -528,7 +525,7 @@ gm.AddLogic("Mario", {
 
 		// *** Go to another scene
 		if (ct.KeyIsDown(ct.KEY_SHIFT)) { gm.StartScene("example2"); }
-=======
+
 		if (this.invulnTime > 0) { this.visible = (Math.round(this.invulnTime) % 2 == 0); }
 		else { this.visible = true; } 
 
@@ -539,7 +536,7 @@ gm.AddLogic("Mario", {
 		if (this.invulnTime > 0) { this.invulnTime -= 1; }
 
 		if (this.starTime > 0) { this.starTime -= 1; }
->>>>>>> master
+
 
 
 
