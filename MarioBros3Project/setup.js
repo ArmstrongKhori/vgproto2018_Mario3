@@ -84,6 +84,16 @@ var GameManager = (function() {
 			if (act.__logic == thisLogic) { return act; }
 		}
 	};
+	this.FindAllByLogic = function(thisLogic) {
+		var allList = new Array();
+		//
+		for (var i = 0; i<this.actorList.length; i++) {
+			var act = this.actorList[i];
+			if (act.__logic == thisLogic) { allList.push(act); }
+		}
+		//
+		return allList;
+	};
 
 	
 	this.CreateActor = function(x, y, params) {
@@ -195,9 +205,13 @@ var GameManager = (function() {
 		}
 	};
 
+	// =========================================================================================================
+	// *** Here are some special utility functions to make everyone's lives easier!
+	// =========================================================================================================
 
-
-
+	this.Overlap = function(lowbounds, value, highbounds) {
+		return ((lowbounds < value) && (value <= highbounds));
+	};
 
 
 	// =========================================================================================================
@@ -399,6 +413,10 @@ var GameManager = (function() {
 		return v;
 	};
 	this._objFunction_DoPhysics = function(readjust) {
+		this.xprevious = this.x;
+		this.yprevious = this.y;
+		//
+		//
 		// *** Acceleration...
 		this.vx += this.ax;
 		this.vy += this.ay;
@@ -419,7 +437,7 @@ var GameManager = (function() {
 			var Q = gm.solidList[i];
 			//
 			if (Q.solid) {
-				var collisionSide = this.CollideWith(Q,readjust);
+				var collisionSide = this.CollideWith(Q, readjust);
 				if (this.BumpInto) {
 					this.BumpInto(Q, collisionSide);
 				}
@@ -534,6 +552,8 @@ var Sprite = (function(imageID, sourceX, sourceY, sourceWidth, sourceHeight, num
 var Actor = (function(x, y) {
 	this.x = x;
 	this.y = y;
+	this.xprevious = x;
+	this.yprevious = y;
 	this.sprite_index = 0;
 	this.sprite_speed = 1;
 	this.xscale = 1;
@@ -547,11 +567,84 @@ var Actor = (function(x, y) {
 	this._type = "actor";
 
 
+	// *** This is my top-secret "perfect collision checking" logic! Now you know...
 	this.CollideWith = function(r2, readjust) {
+		// *** Initial state
+		var collstate;
+		collstate = "none";
+
+		// *** Distances between yourself and the collision
+		var distL,distR,distT,distB;
+		distL = Math.max(0,(r2.Right()+1) - this.Left());
+		distR = Math.max(0,(this.Right()+1) - r2.Left());
+		distT = Math.max(0,(r2.Bottom()+1) - this.Top());
+		distB = Math.max(0,(this.Bottom()+1) - r2.Top());
+
+		// *** Determine where you "originally" were (for collide-correction purposes)
+		var diffHori,diffVert;
+		diffHori = this.x-this.xprevious;
+		diffVert = this.y-this.yprevious;
+		//
+		// *** Determine in what ways you are "entering" the collision
+		var passingL,passingR,passingT,passingB;
+		passingL = gm.Overlap(this.Left(),r2.Right()+1,Math.ceil(this.Left()-diffHori));
+		passingR = gm.Overlap(Math.floor(this.Right()-diffHori),r2.Left(),this.Right());
+		passingT = gm.Overlap(this.Top(),r2.Bottom()+1,Math.ceil(this.Top()-diffVert));
+		passingB = gm.Overlap(Math.floor(this.Bottom()-diffVert),r2.Top(),this.Bottom());
+		//
+		// *** Optionally "disable" certain directions of collision
+		if (r2.ignore_solid) {
+			if (r2.ignore_solid.left) { passingL = false; }
+			if (r2.ignore_solid.right) { passingR = false; }
+			if (r2.ignore_solid.top) { passingT = false; }
+			if (r2.ignore_solid.bottom) { passingB = false; }
+		}
+		//
+		// *** If overlapping the top...
+		if (passingT) {
+			// *** ... And you are also overlapping left/right...
+			if (distL > 0 && distR > 0) {
+				collstate = "top"; // *** "We are colliding the top"
+				if (readjust) { this.y += Math.max(0,distT); }
+			}
+		}
+		// *** If overlapping the bottom...
+		if (passingB) {
+			console.log(Math.ceil(distL), Math.ceil(distR));
+			// *** ... And you are also overlapping left/right...
+			if (distL > 0 && distR > 0) {
+				collstate = "bottom"; // *** "We are colliding the bottom"
+				if (readjust) { this.y -= Math.max(0,distB); }
+			}
+		}
+
+		// *** If overlapping the left...
+		if (passingL) {
+			// *** ... And you are also overlapping top/bottom...
+			if (distT > 0 && distB > 0) {
+				collstate = "left"; // *** "We are colliding the left"
+				if (readjust) { this.x += Math.max(0,distL); }
+			}
+		}
+		// *** If overlapping the right...
+		if (passingR) {
+			// *** ... And you are also overlapping top/bottom...
+			if (distT > 0 && distB > 0) {
+				collstate = "right"; // *** "We are colliding the right"
+				if (readjust) { this.x -= Math.max(0,distR); }
+			}
+		}
+
+
+		return collstate;
+	},
+	this.CollideWith2 = function(r2, readjust) {
 		if (typeof readjust === "undefined") {
 			readjust = false;
 		}
 		var r1 = this;
+		//
+		var ignores = r2.ignore_solid || {};
 		//
 		//
 		var collisionSide = "";
@@ -563,28 +656,27 @@ var Actor = (function(x, y) {
 		var combinedHalfWidths = r1.Width()/2 + r2.Width()/2;
 		var combinedHalfHeights = r1.Height()/2 + r2.Height()/2;
 
-
 		if (Math.abs(vX) < combinedHalfWidths) {
 			if (Math.abs(vY) < combinedHalfHeights) {
 				var overlapX = combinedHalfWidths - Math.abs(vX);
 				var overlapY = combinedHalfHeights - Math.abs(vY);
 
 				if (overlapX >= overlapY) {
-					if (vY > 0) {
+					if (vY > 0 && ignores.top == undefined) {
 						collisionSide = "top";
 
 						if (readjust) { r1.y = r1.y+overlapY; }
-					} else if (vY < 0) {
+					} else if (vY < 0 && ignores.bottom == undefined) {
 						collisionSide = "bottom";
 
 						if (readjust) { r1.y = r1.y-overlapY; }
 					}
 				} else {
-					if (vX > 0) {
+					if (vX > 0 && ignores.left == undefined) {
 						collisionSide = "left";
 
 						if (readjust) { r1.x = r1.x+overlapX; }
-					} else if (vX < 0) {
+					} else if (vX < 0 && ignores.right == undefined) {
 						collisionSide = "right";
 
 						if (readjust) { r1.x = r1.x-overlapX; }
