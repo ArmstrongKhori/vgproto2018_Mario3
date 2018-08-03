@@ -70,7 +70,7 @@ var SECOND = gm.frameRate;
 
 
 gm.AddLogic("SolidBlock", {
-	sprite: "solidBoxFull",
+	// sprite: "solidBoxFull",
 	solid: true,
 	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
 	xscale: 1/4,
@@ -79,7 +79,7 @@ gm.AddLogic("SolidBlock", {
 });
 
 gm.AddLogic("PhaseBlock", {
-	sprite: "solidBoxFull",
+	// sprite: "solidBoxFull",
 	solid: true,
 	ignore_solid: {
 		left: true,

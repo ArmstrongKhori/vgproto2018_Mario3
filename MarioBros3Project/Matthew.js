@@ -8,6 +8,8 @@ il.AddTask("questionBlock2", "questionBlock2.png");
 
 il.AddTask("coin2", "coin2.png");
 
+il.AddTask("coin", "coin2.png");
+
 il.AddTask("pBlock", "pBlock.png");
 
 il.AddTask("emptyBlock", "emptyBlock.png");
@@ -32,6 +34,8 @@ gm.AddSprite("pBlockDown", "pBlock", 32, 0, 16, 16, 1);
 
 gm.AddSprite("coin2", "coin2", 0, 0, 16, 16, 5);
 
+gm.AddSprite("coin", "coin2", 0, 0, 16, 16, 5);
+
 gm.AddSprite("questionBlock2", "questionBlock2", 0, 0, 16, 16, 4);
 //
 // *** Now, I am creating "sprites" by "cutting out" parts of an image. Remember that image earlier? We're using that as reference!
@@ -40,13 +44,6 @@ gm.AddSprite("mushroom", "Items", 0, 0, 16, 16, 1);
 gm.AddSprite("leaf", "reverseLeaf", 0, 0, 16, 16, 2);
 gm.AddSprite("1up", "Items", 32, 0, 16, 16, 1);
 
-gm.AddLogic("SolidBlock", {
-	sprite: "questionBlock2",
-
-	solid: true,
-	// *** Our sprite is a bit big, so I'm shrinking the sprite down!
-	bbox: undefined,
-});
 
 // Parameters: "id for later use", "id of image we're using", source x, source y, source width, source height, number of frames
 // *** Important note: For now, it only works for spritesheets that go "horizontally" and have no gaps... It can't do "up and down" yet.
@@ -120,6 +117,34 @@ gm.AddLogic("leaf", {
 	}
 });
 
+/*gm.AddLogic("coin", {
+	isActive: true,
+	sprite: "coin2",
+	sprite_index: 0,
+	sprite_speed : 8/gm.frameRate,
+
+	PickUpCoin: function(){
+		this.sprite = "coin2";
+		this.solid = false;
+	}
+
+	Update: function(){
+
+		if (){
+			this.PickUpCoin();
+		}
+
+	var mario = gm.FindByLogic("Mario");
+				if (mario.CollideWith(this) != "none") {
+					// ??? <-- Give Mario a coin
+					this.Destroy();
+				}
+
+				this.DoPhysics();
+				this.UpdateMe();
+			}
+});*/
+
 
 gm.AddLogic("coin2", {
 	isActive: false,
@@ -144,12 +169,12 @@ gm.AddLogic("coin2", {
 			if (this.poofTimer <= 0) {
 				this.Destroy();
 			}
-		}
 
 		//add if statements for coin logic
 		
 		this.DoPhysics();
 		this.UpdateMe();
+		}
 	}
 });
 
@@ -176,7 +201,7 @@ gm.AddLogic("Mushroom", {
 				//console.log("if");
 
 			}else{
-				this.vy = -1;
+				this.vy = -1.2;
 				//console.log("else");
 			}
 
@@ -253,7 +278,7 @@ gm.AddLogic("1up", {
 				//console.log("if");
 
 			}else{
-				this.vy = -1;
+				this.vy = -1.2;
 				//console.log("else");
 			}
 			this.DoPhysics(this.out);
@@ -318,7 +343,12 @@ gm.AddLogic("pBlock",{
 		this.sprite = "pBlockDown";
 		this.solid = false;
 		//
-		
+		var allBricks = gm.FindAllByLogic("brick");
+		for (var i = 0; i<allBricks.length; i++) {
+			var brick = allBricks[i];
+
+			brick.TurnToCoin(SECOND*10);
+		}
 
 		
 	},
@@ -463,14 +493,17 @@ gm.AddLogic("brick", {
 	isActive: true,
 	startingY: this.y,
 	sprite_index: 0,
-	sprite_speed: 8/SECOND,
+	sprite_speed: 5/SECOND,
 	sprite: "brick",
 	type: undefined,
 	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
 
-	TurnToCoin: function(){
+	coinTime: 0,
+	TurnToCoin: function(time){
 		this.sprite = "coin2";
 		this.solid = false;
+
+		this.coinTime = time;
 	},
 	TurnToBlock: function(){
 		this.sprite = "brick";
@@ -489,11 +522,18 @@ gm.AddLogic("brick", {
 		}
 
 
-		if (!this.solid) {
-			var mario = gm.FindByLogic("Mario");
-			if (mario.CollideWith(this) != "none") {
-				// ??? <-- Give Mario a coin
-				this.Destroy();
+		if (this.coinTime > 0) {
+			this.coinTime -= 1;
+
+			if (this.coinTime <= 0) {
+				this.TurnToBlock();
+			}
+			else {
+				var mario = gm.FindByLogic("Mario");
+				if (mario.CollideWith(this) != "none") {
+					// ??? <-- Give Mario a coin
+					this.Destroy();
+				}
 			}
 		}
 	},
@@ -508,10 +548,10 @@ gm.AddLogic("brick", {
 
 
 });
-gm.AddLogic("brickCrumb", {
+//gm.AddLogic("brickCrumb", {
 
 
-});
+//});
 
 
 // gm.AddLogic()
@@ -536,11 +576,6 @@ gm.CreateScene("matthew_example", function() {
 		sprite: "level1background" // *** Use that background sprite we made!
 	});
 
-	
-
-	var coin = gm.CreateActor(150, 70);
-	coin.sprite = "coin2";
-	coin.sprite_speed = 8/gm.frameRate;
 
 	var pBlock = gm.CreateActor(100,134);
 	pBlock.sprite = "pBlock";
@@ -560,6 +595,10 @@ gm.CreateScene("matthew_example", function() {
 	leaf.sprite = "leaf";
 	leaf.sprite_speed = 6/gm.frameRate;*/
 
+	var coin = gm.CreateActor(150, 70);
+	coin.sprite = "coin2";
+	coin.sprite_speed = 8/SECOND;
+
 	var oneUp = gm.CreateActor(200,200);
 	oneUp.sprite = "1up";
 	oneUp.sprite_speed = 8/gm.frameRate;
@@ -568,42 +607,40 @@ gm.CreateScene("matthew_example", function() {
 	brickCrumb.sprite = "brickCrumb";
 	brickCrumb.sprite_speed = 8/SECOND;
 
-	var brickOne = gm.CreateActor(175, 170, "brick");
-	brickOne.sprite_speed = 5/SECOND;
-	gm.BecomeSolid(brickOne);
-	brickOne.name = "brick";
-	brickOne.type = "brick";
+	for (var n = 0; n<5; n++) {
+		var brickOne = gm.CreateActor(175+16*n, 170, "brick");
+		gm.BecomeSolid(brickOne);
+		var brickOne = gm.CreateActor(175+16*n, 170 -16, "brick");
+		gm.BecomeSolid(brickOne);
+		var brickOne = gm.CreateActor(175+16*n, 170 -32, "brick");
+		gm.BecomeSolid(brickOne);
+	}
 
 	//mushroom.sprite = "mushroom"; // *** We're using Mario's "walking" sprite-- You know, the one we created earlier!
 	//mushroom.sprite_speed = 12/gm.frameRate;
 	var qBlock = gm.CreateActor(100,180, "questionBlock2");
 	qBlock.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlock);
-	qBlock.name = "question block";
 	qBlock.type = "mushroom";
 
 	var qBlockTwo = gm.CreateActor(148,180, "questionBlock2");
 	qBlockTwo.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlockTwo);
-	qBlockTwo.name = "question block";
 	qBlockTwo.type = "coin2";
 
 	var qBlockThree = gm.CreateActor(50,180, "questionBlock2");
 	qBlockThree.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlockThree);
-	qBlockThree.name = "question block";
 	qBlockThree.type = "leaf";
 
 	var qBlockFour = gm.CreateActor(116,180, "questionBlock2");
 	qBlockFour.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlockFour);
-	qBlockFour.name = "question block";
 	qBlockFour.type = "1up";
 
 	var qBlockFive = gm.CreateActor(66,180, "questionBlock2");
 	qBlockFive.sprite_speed = 8/gm.frameRate;
 	gm.BecomeSolid(qBlockFive);
-	qBlockFive.name = "question block";
 	qBlockFive.type = "pBlock";
 
 	
@@ -615,7 +652,6 @@ gm.CreateScene("matthew_example", function() {
 	gm.BecomeSolid(actor);
 
 	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
-	actor.xscale = 1;
 	actor.visible = true;
 	actor.name = "turn around block right";
 
@@ -623,7 +659,6 @@ gm.CreateScene("matthew_example", function() {
 	gm.BecomeSolid(actor);
 
 	actor.bbox = gm.MakeBoundingBox(0, 0, 16, 16, 0, 0);
-	actor.xscale = 1;
 	actor.visible = true;
 	actor.name = "turn around block left";
 
