@@ -12,6 +12,7 @@ ct ~ "Controller" object. Use it for reading keyboard inputs.
 
 il.AddTask("goomba", "goomba.png");
 il.AddTask("koopatroopa", "koopa-right.png");
+il.AddTask("koopatroopaRed", "koopa-right(red).png");
 il.AddTask("koopatroopaWings", "KoopawithWings(good2)right.png");
 il.AddTask("goombaWings", "good-goomba-wings.png");
 il.AddTask("piranhaPlain", "piranha2.png");
@@ -24,7 +25,10 @@ gm.AddSprite("darkGoombawalking", "goomba", 16*0, 0, 16, 16, 2, 16/2, 16);
 gm.AddSprite("darkGoombaDead", "goomba", 16*2, 0, 16, 16, 1, 16/2, 16);
 //koopatroopa
 gm.AddSprite("koopatroopaWalking", "koopatroopa", 20*0, 0, 20, 27, 2, 20/2, 27);
-//gm.AddSprite("koopatroopaShell", "koopatroopa", 24*2, 0, 24, 24, 4, 19/2, 23);
+gm.AddSprite("koopatroopaShell", "koopatroopa", 20*2, 0, 20, 27, 4, 20/2, 27);
+//koopatroopaRed
+gm.AddSprite("koopatroopaWalkingRed", "koopatroopaRed", 20*0, 0, 20, 27, 2, 20/2, 27);
+gm.AddSprite("koopatroopaShellRed", "koopatroopaRed", 20*2, 0, 20, 27, 4, 20/2, 27);
 //koopaWINGS
 gm.AddSprite("koopatroopaWalkingWings", "koopatroopaWings", 20*0, 0, 20, 27, 3, 20/2, 27);
 //goombaWings
@@ -91,6 +95,59 @@ gm.AddLogic("GreenKoopa", {
 				mario.GetHit();
 			}
 		}
+	},
+	
+});
+
+gm.AddLogic("RedKoopa", {
+	
+	sprite: "koopatroopaWalkingRed",
+	sprite_speed: 5/gm.frameRate,
+	maxHeight: 200,
+	maxWidth: 100,
+	gravity: 20,
+	force: -10,
+	vx: 1,
+	ax: 0,
+	fliptime: 0,
+	currentPos: 0,
+	
+	bbox: gm.MakeBoundingBox(0,0,16,16,16/2,16),
+	
+	Update: function(){
+		
+		
+		this.y += this.gravity;
+	
+		if(this.y >= this.maxHeight){
+			this.x += this.vx;
+			this.y = 240;
+		}
+
+		/*if(this.x == this.maxWidth){
+			if(this.vx > 0 && this.xscale == 1){
+				this.xscale *= -1;
+			}
+			this.vx *= -1;
+			this.x += this.vx;
+		}*/
+		
+		
+		this.DoPhysics(true);
+		
+		var mario = gm.FindByLogic("Mario");
+		var side = mario.CollideWith(this);
+		if (side != "none") {
+			if (side == "bottom" && mario.vy > 0) {
+				this.Destroy();
+				mario.Jump();
+			}
+			else {
+				mario.GetHit();
+			}
+		}
+		
+		this.UpdateMe();
 	},
 	
 });
@@ -404,7 +461,9 @@ gm.CreateScene("myEnemyScene", function() {
 	
 	var actorPF = gm.CreateActor(150, 200, "PiranhaFire");
 	actorPF.firstpos = 200;
-
+	
+	var actorRK = gm.CreateActor(50, 50, "RedKoopa");
+	gm.BecomePhysical(actorRK);
 
 	// *** We create a "tile"-- These are objects that exists purely for "visual" purposes and (usually) do not interact with Actors (IE: Backgrounds, etc...)
 	var background = gm.CreateTile(0, 0, false, {
