@@ -317,6 +317,8 @@ gm.AddLogic("pBlock",{
 		
 		this.sprite = "pBlockDown";
 		this.solid = false;
+		//
+		
 
 		
 	},
@@ -466,6 +468,15 @@ gm.AddLogic("brick", {
 	type: undefined,
 	bbox:gm.MakeBoundingBox(0, 0, 16, 16, 0, 0),
 
+	TurnToCoin: function(){
+		this.sprite = "coin2";
+		this.solid = false;
+	},
+	TurnToBlock: function(){
+		this.sprite = "brick";
+		this.solid = true;
+	},
+
 
 	Update: function() {
 		if (this.blockWasHit > 0) {
@@ -474,6 +485,15 @@ gm.AddLogic("brick", {
 			if (this.blockWasHit <= 0) {
 				this.y += 8;
 				this.blockWasHit = false;
+			}
+		}
+
+
+		if (!this.solid) {
+			var mario = gm.FindByLogic("Mario");
+			if (mario.CollideWith(this) != "none") {
+				// ??? <-- Give Mario a coin
+				this.Destroy();
 			}
 		}
 	},
